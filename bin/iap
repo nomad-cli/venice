@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'commander/import'
+require 'terminal-table'
+
+require 'venice'
+
+HighLine.track_eof = false # Fix for built-in Ruby
+Signal.trap("INT") {} # Suppress backtrace when exiting command
+
+program :version, Venice::VERSION
+program :description, 'A command-line interface for sending push notifications'
+
+program :help, 'Author', 'Mattt Thompson <m@mattt.me>'
+program :help, 'Website', 'https://github.com/mattt'
+program :help_formatter, :compact
+
+default_command :help
+
+command :verify do |c|
+  c.syntax = 'iap verify RECEIPT'
+  c.summary = 'Verifies an In-App Purchase Receipt'
+  c.description = ''
+
+  c.example 'description', 'iap verify /path/to/receipt'
+  
+  c.action do |args, options|
+    say_error "Missing receipt argument" and abort unless file = args.first
+    say_error "Receipt file does not exist" unless File.exist?(file)
+
+    begin
+      receipt = Venice::Receipt.verify!(File.read(file))
+
+      table = Terminal::Table.new :title => "Receipt" do |t|
+        hash = receipt.to_h
+        hash.keys.sort.each do |key|
+          t << [key, hash[key]]
+        end
+      end
+
+      puts table
+
+    rescue => e
+      say_error "Exception: #{e}" and abort
+    end
+  end
+end
