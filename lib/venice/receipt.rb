@@ -130,7 +130,7 @@ module Venice
 
             return receipt
           else
-            raise RECEIPT_VERIFICATION_ERRORS_BY_STATUS_CODE[status] || ReceiptVerificationError
+            raise (RECEIPT_VERIFICATION_ERRORS_BY_STATUS_CODE[status] || ReceiptVerificationError), "#{status}"
           end
 
         rescue => error
