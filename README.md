@@ -3,20 +3,9 @@
 
 Venice is a simple gem for verifying Apple In-App Purchase receipts, and retrieving the information associated with receipt data.
 
-From Apple's [In-App Purchase Programming Guide](http://developer.apple.com/library/ios/#documentation/NetworkingInternet/Conceptual/StoreKitGuide/VerifyingStoreReceipts/VerifyingStoreReceipts.html):
+There are two reasons why you should verify in-app purchase receipts on the server: First, it allows you to keep your own records of past purchases, which is useful for up-to-the-minute metrics and historical analysis. Second, server-side verification over SSL is the most reliable way to determine the authenticity of purchasing records.
 
-> Your application should perform the additional step of verifying that the receipt you received from Store Kit came from Apple. This is particularly important when your application relies on a separate server to provide subscriptions, services, or downloadable content. Verifying receipts on your server ensures that requests from your application are valid.
-
-> - `quantity`: The number of items purchased. This value corresponds to the quantity property of the SKPayment object stored in the transaction’s payment property.
-> - `product_id`: The product identifier of the item that was purchased. This value corresponds to the productIdentifier property of the SKPayment object stored in the transaction’s payment property.
-> - `transaction_id`: The transaction identifier of the item that was purchased. This value corresponds to the transaction’s transactionIdentifier property.
-> - `purchase_date`: The date and time this transaction occurred. This value corresponds to the transaction’s transactionDate property.
-> - `original_transaction_id`: For a transaction that restores a previous transaction, this holds the original transaction identifier.
-> - `original_purchase_date`: For a transaction that restores a previous transaction, this holds the original purchase date.
-> - `app_item_id`: A string that the App Store uses to uniquely identify the application that created the payment transaction. If your server supports multiple applications, you can use this value to differentiate between them. Applications that are executing in the sandbox do not yet have an app-item-id assigned to them, so this key is missing from receipts created by the sandbox.
-> - `version_external_identifier`: An arbitrary number that uniquely identifies a revision of your application. This key is missing in receipts created by the sandbox.
-> - `bid`: The bundle identifier for the application.
-> - `bvrs`: A version number for the application.
+See Apple's [In-App Purchase Programming Guide](http://developer.apple.com/library/ios/#documentation/NetworkingInternet/Conceptual/StoreKitGuide/VerifyingStoreReceipts/VerifyingStoreReceipts.html) for additional information.
 
 ## Installation
 
