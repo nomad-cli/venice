@@ -7,6 +7,8 @@ There are two reasons why you should verify in-app purchase receipts on the serv
 
 See Apple's [In-App Purchase Programming Guide](http://developer.apple.com/library/ios/#documentation/NetworkingInternet/Conceptual/StoreKitGuide/VerifyingStoreReceipts/VerifyingStoreReceipts.html) for additional information.
 
+> It's part of a series of world-class command-line utilities for iOS development, which includes [Cupertino](https://github.com/mattt/cupertino) (Apple Dev Center management), [Shenzhen](https://github.com/mattt/shenzhen) (Building & Distribution), [Houston](https://github.com/mattt/houston) (Push Notifications), and [Dubai](https://github.com/mattt/dubai) (Passbook pass generation).
+
 ## Installation
 
     $ gem install venice
