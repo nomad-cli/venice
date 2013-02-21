@@ -36,14 +36,14 @@ Venice also comes with the `iap` binary, which provides a convenient way to veri
     |                           Receipt                           |
     +-----------------------------+-------------------------------+
     | app_item_id                 |                               |
-    | bid                         | com.mindmobapp.MindMob        |
+    | bid                         | com.foo.bar                   |
     | bvrs                        | 20120427                      |
-    | original_purchase_date      | Mon, 30 Apr 2012 15:05:55 GMT |
-    | original_transaction_id     | 1000000046178817              |
-    | product_id                  | com.mindmobapp.download       |
-    | purchase_date               | Mon, 30 Apr 2012 15:05:55 GMT |
+    | original_purchase_date      | Sun, 01 Jan 2013 12:00:00 GMT |
+    | original_transaction_id     | 1000000000000001              |
+    | product_id                  | com.example.product           |
+    | purchase_date               | Sun, 01 Jan 2013 12:00:00 GMT |
     | quantity                    | 1                             |
-    | transaction_id              | 1000000046178817              |
+    | transaction_id              | 1000000000000001              |
     | version_external_identifier |                               |
     +-----------------------------+-------------------------------+
 
