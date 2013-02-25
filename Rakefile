@@ -9,3 +9,7 @@ file "#{gemspec.full_name}.gem" => gemspec.files + ["venice.gemspec"] do
   system "gem build venice.gemspec"
   system "gem install venice-#{Venice::VERSION}.gem"
 end
+
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec)
+task :default => :spec
