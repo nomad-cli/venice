@@ -1,5 +1,6 @@
 require "bundler"
 Bundler.setup
+require 'appraisal'
 
 gemspec = eval(File.read("venice.gemspec"))
 

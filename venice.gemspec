@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency "commander", "~> 4.1.2"
   s.add_dependency "terminal-table", "~> 1.4.5"
 
+  s.add_development_dependency "appraisal"
   s.add_development_dependency "rspec"
   s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"
