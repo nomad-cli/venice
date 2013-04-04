@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = "iTunes In-App Purchase Receipt Verification"
   s.description = ""
 
-  s.add_dependency "excon", "~> 0.17.0"
+  s.add_dependency "excon", "~> 0.20.0"
   s.add_dependency "json", "~> 1.7.3"
   s.add_dependency "commander", "~> 4.1.2"
   s.add_dependency "terminal-table", "~> 1.4.5"
