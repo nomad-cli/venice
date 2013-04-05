@@ -68,6 +68,8 @@ module Venice
 
     # For an active subscription was renewed with transaction that took place after the receipt your server sent to the App Store, this is the latest receipt.
     attr_accessor :latest
+    
+    attr_reader :expires_date
 
     def initialize(attributes = {})
       @quantity = Integer(attributes['quantity']) if attributes['quantity']
@@ -78,13 +80,18 @@ module Venice
       @version_external_identifier = attributes['version_external_identifier']
       @bid = attributes['bid']
       @bvrs = attributes['bvrs']
-
+      
+      if (attributes['expires_date'])
+        expires_date_seconds = attributes['expires_date'].to_i / 1000
+        @expires_date = DateTime.strptime(expires_date_seconds.to_s,'%s')
+      end
+      
       if attributes['original_transaction_id'] || attributes['original_purchase_date']
         original_attributes = {
           'transaction_id' => attributes['original_transaction_id'],
           'purchase_date' => attributes['original_purchase_date']
         }
-
+        
         self.original = Receipt.new(original_attributes)
       end
     end
@@ -97,6 +104,7 @@ module Venice
         :purchase_date => (@purchase_date.httpdate rescue nil),
         :original_transaction_id => (@original.transaction_id rescue nil),
         :original_purchase_date => (@original.purchase_date.httpdate rescue nil),
+        :expires_date => (@expires_date.httpdate rescue nil),
         :app_item_id => @app_item_id,
         :version_external_identifier => @version_external_identifier,
         :bid => @bid,
@@ -117,9 +125,9 @@ module Venice
         client = Client.production
 
         begin
-          json = client.verify!(data)
+          json = client.verify!(data,options)
           status, receipt_attributes = json['status'].to_i, json['receipt']
-
+          
           case status
           when 0, 21006
             receipt = Receipt.new(receipt_attributes)
