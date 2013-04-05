@@ -12,8 +12,14 @@ module Venice
       @verification_url = ENV['IAP_VERIFICATION_ENDPOINT']
     end
 
-    def verify!(data)
-      response = Excon.post(@verification_url, :headers => headers, :body => {'receipt-data' => data}.to_json)
+    def verify!(data,options = {})   
+      params = {
+        'receipt-data' => data
+      }
+      
+      params.merge!('password' => options[:secret]) if options[:secret]
+      
+      response = Excon.post(@verification_url, :headers => headers, :body => params.to_json)
       JSON.parse(response.body)
     end
 
