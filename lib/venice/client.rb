@@ -13,8 +13,11 @@ module Venice
     end
 
     def verify!(data)
-      response = Excon.post(@verification_url, :headers => headers, :body => {'receipt-data' => data}.to_json)
-      JSON.parse(response.body)
+      params = {
+        'receipt-data' => data
+      }
+      params.merge!('password' => Venice.shared_secret) if Venice.shared_secret
+      perform_post(params)
     end
 
     class << self
@@ -32,6 +35,11 @@ module Venice
     end
 
     private
+
+    def perform_post(params)
+      response = Excon.post(@verification_url, :headers => headers, :body => params.to_json)
+      JSON.parse(response.body)
+    end
 
     def headers
       {
