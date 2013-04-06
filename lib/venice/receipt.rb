@@ -44,10 +44,10 @@ module Venice
 
     # The product identifier of the item that was purchased. This value corresponds to the productIdentifier property of the SKPayment object stored in the transaction’s payment property.
     attr_reader :product_id
-    
+
     # The transaction identifier of the item that was purchased. This value corresponds to the transaction’s transactionIdentifier property.
     attr_reader :transaction_id
-    
+
     # The date and time this transaction occurred. This value corresponds to the transaction’s transactionDate property.
     attr_reader :purchase_date
 
@@ -68,6 +68,9 @@ module Venice
 
     # For an active subscription was renewed with transaction that took place after the receipt your server sent to the App Store, this is the latest receipt.
     attr_accessor :latest
+
+    # For an expired auto-renewable subscription, this contains the receipt details for the latest expired receipt
+    attr_accessor :latest_expired
 
     def initialize(attributes = {})
       @quantity = Integer(attributes['quantity']) if attributes['quantity']
@@ -128,6 +131,10 @@ module Venice
               receipt.latest = Receipt.new(latest_receipt_attributes)
             end
 
+            if latest_expired_receipt_attributes = json['latest_expired_receipt_info']
+              receipt.latest_expired = Receipt.new(latest_expired_receipt_attributes)
+            end
+
             return receipt
           else
             raise (RECEIPT_VERIFICATION_ERRORS_BY_STATUS_CODE[status] || ReceiptVerificationError), "#{status}"
@@ -143,7 +150,7 @@ module Venice
             retry
           else
             raise error
-          end 
+          end
         end
       end
 
