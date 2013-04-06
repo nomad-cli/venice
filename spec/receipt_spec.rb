@@ -38,6 +38,7 @@ describe Venice::Receipt do
     its(:bvrs) { "0.1" }
     its(:bid) { "com.foo.bar" }
     its(:original) { should be_instance_of Venice::Receipt }
+    its(:expires_at) { should be_instance_of Time }
 
     it "should parse the origin attributes" do
       subject.original.transaction_id.should == "1000000061051565"

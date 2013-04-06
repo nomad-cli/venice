@@ -72,6 +72,9 @@ module Venice
     # For an expired auto-renewable subscription, this contains the receipt details for the latest expired receipt
     attr_accessor :latest_expired
 
+    # For auto-renewable subscriptions, returns the date the subscription will expire
+    attr_reader :expires_at
+
     def initialize(attributes = {})
       @quantity = Integer(attributes['quantity']) if attributes['quantity']
       @product_id = attributes['product_id']
@@ -81,6 +84,9 @@ module Venice
       @version_external_identifier = attributes['version_external_identifier']
       @bid = attributes['bid']
       @bvrs = attributes['bvrs']
+
+      # expires_date is in ms since the Epoch, Time.at expects seconds
+      @expires_at = Time.at(attributes['expires_date'].to_i / 1000) if attributes['expires_date']
 
       if attributes['original_transaction_id'] || attributes['original_purchase_date']
         original_attributes = {
