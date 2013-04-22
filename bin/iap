@@ -21,7 +21,8 @@ command :verify do |c|
   c.syntax = 'iap verify RECEIPT'
   c.summary = 'Verifies an In-App Purchase Receipt'
   c.description = ''
-  c.option '--secret SHARED_SECRET', 'Use a shared secret for auto-renewable subscription receipts'
+  c.option '--[no]-sandbox', 'Use sandbox verification webservice'
+  c.option '--secret SECRET', 'Use a shared secret for auto-renewable subscription receipts'
 
   c.example 'description', 'iap verify /path/to/receipt [--secret shared_secret]'
 
@@ -29,10 +30,11 @@ command :verify do |c|
     say_error "Missing receipt argument" and abort unless file = args.first
     say_error "Receipt file does not exist" unless File.exist?(file)
 
-    Venice::Client.shared_secret = options.secret if options.secret
+    client = options.sandbox ? Venice::Client.development : Venice::Client.production
+    client.shared_secret = options.secret if options.secret
 
     begin
-      receipt = Venice::Receipt.verify!(File.read(file))
+      receipt = client.verify!(File.read(file))
 
       table = Terminal::Table.new :title => "Receipt" do |t|
         hash = receipt.to_h
