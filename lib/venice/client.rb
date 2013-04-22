@@ -1,4 +1,5 @@
-require 'excon'
+require 'net/http'
+require 'uri'
 require 'json'
 
 module Venice
@@ -7,18 +8,6 @@ module Venice
 
   class Client
     attr_accessor :verification_url
-
-    def initialize
-      @verification_url = ENV['IAP_VERIFICATION_ENDPOINT']
-    end
-
-    def verify!(data)
-      params = {
-        'receipt-data' => data
-      }
-      params.merge!('password' => Venice.shared_secret) if Venice.shared_secret
-      perform_post(params)
-    end
 
     class << self
       def development
@@ -32,20 +21,33 @@ module Venice
         client.verification_url = ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT
         client
       end
+
+      def shared_secret=(secret)
+        @@shared_secret = secret
+      end
     end
 
-    private
-
-    def perform_post(params)
-      response = Excon.post(@verification_url, :headers => headers, :body => params.to_json)
-      JSON.parse(response.body)
+    def initialize
+      @verification_url = ENV['IAP_VERIFICATION_ENDPOINT']
     end
 
-    def headers
-      {
-        'Accept' => 'application/json',
-        'Content-Type' => 'application/json'
+    def verify!(data)
+      parameters = {
+        'receipt-data' => data
       }
+
+      parameters['password'] = @@shared_secret rescue nil
+
+      uri = URI(@verification_url)
+      http = Net::HTTP.new(uri.host, uri.port)
+
+      request = Net::HTTP::Post.new(uri.request_uri)
+      request['Accept'] = "application/json"
+      request['Content-Type'] = "application/json"
+      request.body = parameters.to_json
+
+      response = http.request(request)
+      JSON.parse(response.body)
     end
   end
 end
