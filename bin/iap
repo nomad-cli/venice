@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
 
+require 'venice'
+
+
 require 'commander/import'
 require 'terminal-table'
 
-require 'venice'
 
 HighLine.track_eof = false # Fix for built-in Ruby
 Signal.trap("INT") {} # Suppress backtrace when exiting command
@@ -21,8 +23,8 @@ command :verify do |c|
   c.syntax = 'iap verify RECEIPT'
   c.summary = 'Verifies an In-App Purchase Receipt'
   c.description = ''
-  c.option '--[no]-sandbox', 'Use sandbox verification webservice'
-  c.option '--secret SECRET', 'Use a shared secret for auto-renewable subscription receipts'
+  c.option '-S', '--[no-]sandbox', 'Use sandbox verification webservice'
+  c.option '-p', '--secret SECRET', 'Use a shared secret for auto-renewable subscription receipts'
 
   c.example 'description', 'iap verify /path/to/receipt [--secret shared_secret]'
 
@@ -45,8 +47,8 @@ command :verify do |c|
 
       puts table
 
-    rescue => e
-      say_error "Exception: #{e}" and abort
+    rescue => error
+      say_error "Exception: #{error}" and abort
     end
   end
 end
