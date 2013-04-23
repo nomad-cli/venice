@@ -48,7 +48,7 @@ command :verify do |c|
       puts table
 
     rescue => error
-      say_error error and abort
+      say_error error.message and abort
     end
   end
 end
