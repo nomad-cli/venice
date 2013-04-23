@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Venice::Client do
   let(:receipt_data) { "asdfzxcvjklqwer" }
-  let(:client) { subject } 
+  let(:client) { subject }
 
   describe "#verify!" do
     context "no shared_secret" do
       before do
-        Venice.shared_secret = nil
+        client.shared_secret = nil
       end
 
       it "should only include the receipt_data" do
@@ -18,9 +18,9 @@ describe Venice::Client do
 
     context "with a shared secret" do
       let(:secret) { "shhhhhh" }
-      
+
       before do
-        Venice.shared_secret = secret
+        client.shared_secret = secret
       end
 
       it "should include the secret in the post" do
