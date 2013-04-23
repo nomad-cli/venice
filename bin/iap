@@ -11,7 +11,7 @@ HighLine.track_eof = false # Fix for built-in Ruby
 Signal.trap("INT") {} # Suppress backtrace when exiting command
 
 program :version, Venice::VERSION
-program :description, 'A command-line interface for sending push notifications'
+program :description, 'A command-line interface for verifying Apple In-App Purchase receipts'
 
 program :help, 'Author', 'Mattt Thompson <m@mattt.me>'
 program :help, 'Website', 'https://github.com/mattt'
