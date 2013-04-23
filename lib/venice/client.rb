@@ -1,21 +1,10 @@
-require 'net/http'
-require 'uri'
 require 'json'
+require 'net/https'
+require 'uri'
 
 module Venice
   ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT = "https://buy.itunes.apple.com/verifyReceipt"
   ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT = "https://sandbox.itunes.apple.com/verifyReceipt"
-
-  RECEIPT_VERIFICATION_ERRORS_BY_STATUS_CODE = {
-    21000 => InvalidJSONObjectError,
-    21002 => MalformedReceiptDataError,
-    21003 => ReceiptVerificationAuthenticationError,
-    21004 => SharedSecretMismatchError,
-    21005 => ReceiptVerificationServerOfflineError,
-    21006 => ValidReceiptExpiredSubscriptionError,
-    21007 => SandboxReceiptSentToProductionError,
-    21008 => ProductionReceiptSentToSandboxError
-  }
 
   class ReceiptVerificationError < StandardError; end
 
@@ -42,6 +31,17 @@ module Venice
 
   # 21008: This receipt is a production receipt, but it was sent to the sandbox service for verification.
   class ProductionReceiptSentToSandboxError < ReceiptVerificationError; end
+
+  RECEIPT_VERIFICATION_ERRORS_BY_STATUS_CODE = {
+    21000 => InvalidJSONObjectError,
+    21002 => MalformedReceiptDataError,
+    21003 => ReceiptVerificationAuthenticationError,
+    21004 => SharedSecretMismatchError,
+    21005 => ReceiptVerificationServerOfflineError,
+    21006 => ValidReceiptExpiredSubscriptionError,
+    21007 => SandboxReceiptSentToProductionError,
+    21008 => ProductionReceiptSentToSandboxError
+  }
 
   class Client
     attr_accessor :verification_url
@@ -94,10 +94,12 @@ module Venice
         'receipt-data' => data
       }
 
-      parameters['password'] = @shared_secret rescue nil
+      parameters['password'] = @shared_secret if @shared_secret
 
       uri = URI(@verification_url)
       http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       request = Net::HTTP::Post.new(uri.request_uri)
       request['Accept'] = "application/json"
