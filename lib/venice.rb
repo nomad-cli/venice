@@ -1,6 +1,3 @@
-module Venice
-  VERSION = "0.0.1"
-end
-
+require 'venice/version'
 require 'venice/client'
 require 'venice/receipt'
