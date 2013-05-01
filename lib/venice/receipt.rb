@@ -92,10 +92,10 @@ module Venice
           client.verify!(data, options)
         rescue => error
           case error
-          when SandboxReceiptSentToProductionError
+          when 21007
             client = Client.development
             retry
-          when ProductionReceiptSentToSandboxError
+          when 21008
             client = Client.production
             retry
           else
