@@ -90,8 +90,8 @@ module Venice
 
         begin
           client.verify!(data, options)
-        rescue => error
-          case error
+        rescue Venice::Error => error
+          case error.code
           when 21007
             client = Client.development
             retry
