@@ -1,5 +1,4 @@
-# Venice
-**In-App Purchase Receipt Verification**
+![Venice](https://raw.github.com/mattt/nomad-cli.com/assets/venice-banner.png)
 
 Venice is a simple gem for verifying Apple In-App Purchase receipts, and retrieving the information associated with receipt data.
 
@@ -7,7 +6,7 @@ There are two reasons why you should verify in-app purchase receipts on the serv
 
 See Apple's [In-App Purchase Programming Guide](http://developer.apple.com/library/ios/#documentation/NetworkingInternet/Conceptual/StoreKitGuide/VerifyingStoreReceipts/VerifyingStoreReceipts.html) for additional information.
 
-> Venice is named for [Venice, Italy](http://en.wikipedia.org/wiki/Venice,_Italy)—or more specifically, Shakespeare's [_The Merchant of Venice_](http://en.wikipedia.org/wiki/The_Merchant_of_Venice).  
+> Venice is named for [Venice, Italy](http://en.wikipedia.org/wiki/Venice,_Italy)—or more specifically, Shakespeare's [_The Merchant of Venice_](http://en.wikipedia.org/wiki/The_Merchant_of_Venice).
 > It's part of a series of world-class command-line utilities for iOS development, which includes [Cupertino](https://github.com/mattt/cupertino) (Apple Dev Center management), [Shenzhen](https://github.com/mattt/shenzhen) (Building & Distribution), [Houston](https://github.com/mattt/houston) (Push Notifications), and [Dubai](https://github.com/mattt/dubai) (Passbook pass generation).
 
 ## Installation
