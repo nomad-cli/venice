@@ -57,7 +57,7 @@ module Venice
 
         return receipt
       else
-        raise (RECEIPT_VERIFICATION_ERRORS_BY_STATUS_CODE[status] || "Unknown Error: #{status}")
+        raise Error.new(code: status, message: (RECEIPT_VERIFICATION_ERRORS_BY_STATUS_CODE[status] || "Unknown Error: #{status}"))
       end
     end
 
