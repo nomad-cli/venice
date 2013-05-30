@@ -30,4 +30,3 @@ describe Venice::Client do
     end
   end
 end
-
