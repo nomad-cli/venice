@@ -24,7 +24,7 @@ if receipt = Venice::Receipt.verify(data)
 end
 ```
 
-## Comand Line Interface
+## Command Line Interface
 
 Venice also comes with the `iap` binary, which provides a convenient way to verify receipts from the command line.
 
