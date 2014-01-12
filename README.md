@@ -19,7 +19,7 @@ See Apple's [In-App Purchase Programming Guide](http://developer.apple.com/libra
 require 'venice'
 
 data = "(Base64-Encoded Receipt Data)"
-if receipt = Venice::Receipt.verify(data)
+if receipt = Venice::Receipt.verify(data, {:shared_secret => "mysecret"})
   p receipt.to_h
 end
 ```
