@@ -40,7 +40,7 @@ module Venice
       if attributes['in_app']
         @in_app = []
         attributes['in_app'].each do |in_app_purchase_attributes|
-          @in_app <<  InAppReceipt.new(in_app_purchase_attributes)
+          @in_app << InAppReceipt.new(in_app_purchase_attributes)
         end
       end
 
@@ -56,7 +56,7 @@ module Venice
         :adam_id => @adam_id,
         :download_id => @download_id,
         :requested_at => (@requested_at.httpdate rescue nil),
-        :in_app => @in_app
+        :in_app => @in_app.map{|iap| iap.to_h }
       }
     end
 
