@@ -41,7 +41,20 @@ command :verify do |c|
       table = Terminal::Table.new :title => "Receipt" do |t|
         hash = receipt.to_h
         hash.keys.sort.each do |key|
+          next if key == :in_app
           t << [key, hash[key]]
+        end
+
+        if hash[:in_app]
+          index = 0
+          hash[:in_app].each do |iap|
+            index += 1
+            t << :separator
+            t << [:in_app, index]
+            iap.keys.sort.each do |key|
+              t << [" - #{key}", iap[key]]
+            end
+          end
         end
       end
 
