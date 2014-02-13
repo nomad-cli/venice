@@ -29,11 +29,15 @@ module Venice
     end
 
     def verify!(data, options = {})
+      options = {return_hash: false}.merge(options)
+
       json = json_response_from_verifying_data(data)
       status, receipt_attributes = json['status'].to_i, json['receipt']
 
       case status
       when 0, 21006
+        return receipt_attributes if options[:return_hash] == true
+
         receipt = Receipt.new(receipt_attributes)
 
         if latest_receipt_attributes = json['latest_receipt_info']
@@ -44,7 +48,7 @@ module Venice
           receipt.latest_expired = Receipt.new(latest_expired_receipt_attributes)
         end
 
-        return receipt
+        receipt
       else
         raise Receipt::VerificationError.new(status)
       end
