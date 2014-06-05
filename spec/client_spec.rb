@@ -8,10 +8,14 @@ describe Venice::Client do
     context "no shared_secret" do
       before do
         client.shared_secret = nil
+        Venice::Receipt.stub :new
       end
 
       it "should only include the receipt_data" do
-        client.should_receive(:perform_post).with('receipt-data' => receipt_data)
+        Net::HTTP.any_instance.should_receive(:request) do |post|
+          post.body.should eq({'receipt-data' => receipt_data}.to_json)
+          post
+        end
         client.verify! receipt_data
       end
     end
@@ -21,10 +25,14 @@ describe Venice::Client do
 
       before do
         client.shared_secret = secret
+        Venice::Receipt.stub :new
       end
 
       it "should include the secret in the post" do
-        client.should_receive(:perform_post).with('receipt-data' => receipt_data, 'password' => secret)
+        Net::HTTP.any_instance.should_receive(:request) do |post|
+          post.body.should eq({'receipt-data' => receipt_data, 'password' => secret}.to_json)
+          post
+        end
         client.verify! receipt_data
       end
     end

@@ -29,6 +29,8 @@ module Venice
     end
 
     def verify!(data, options = {})
+      @verification_url ||= ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
+
       json = json_response_from_verifying_data(data)
       status, receipt_attributes = json['status'].to_i, json['receipt']
 
