@@ -47,7 +47,7 @@ module Venice
 
         return receipt
       else
-        raise Receipt::VerificationError.new(status)
+        raise Receipt::VerificationError.new(status, receipt)
       end
     end
 
