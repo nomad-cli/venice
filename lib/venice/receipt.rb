@@ -17,6 +17,9 @@ module Venice
     # The version of the app that was originally purchased.
     attr_reader :original_application_version
 
+    # The original purchase date
+    attr_reader :original_purchase_date
+
     # The date that the app receipt expires.
     attr_reader :expires_at
 
@@ -26,16 +29,23 @@ module Venice
     attr_reader :download_id
     attr_reader :requested_at
 
+    attr_accessor :latest_receipt
+
     def initialize(attributes = {})
       @bundle_id = attributes['bundle_id']
       @application_version = attributes['application_version']
       @original_application_version = attributes['original_application_version']
-      @expires_at = Time.at(attributes['expiration_date'].to_i / 1000) if attributes['expiration_date']
+      if attributes['original_purchase_date']
+        @original_purchase_date = DateTime.parse(attributes['original_purchase_date'])
+      end
+      if attributes['expiration_date']
+        @expires_at = Time.at(attributes['expiration_date'].to_i / 1000).to_datetime
+      end
 
       @receipt_type = attributes['receipt_type']
       @adam_id = attributes['adam_id']
       @download_id = attributes['download_id']
-      @requested_at = DateTime.parse(attributes['requested_date']) if attributes['requested_date']
+      @requested_at = DateTime.parse(attributes['request_date']) if attributes['request_date']
 
       if attributes['in_app']
         @in_app = []
@@ -46,22 +56,25 @@ module Venice
 
     end
 
-    def to_h
+    def to_hash
       {
         :bundle_id => @bundle_id,
         :application_version => @application_version,
         :original_application_version => @original_application_version,
+        :original_purchase_date => @original_purchase_date,
         :expires_at => (@expires_at.httpdate rescue nil),
         :receipt_type => @receipt_type,
         :adam_id => @adam_id,
         :download_id => @download_id,
         :requested_at => (@requested_at.httpdate rescue nil),
-        :in_app => @in_app.map{|iap| iap.to_h }
+        :in_app => @in_app.map{|iap| iap.to_h },
+        :latest_receipt => @latest_receipt
       }
     end
+    alias_method :to_h, :to_hash
 
     def to_json
-      self.to_h.to_json
+      self.to_hash.to_json
     end
 
     class << self
