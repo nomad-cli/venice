@@ -47,8 +47,8 @@ module Venice
       @download_id = attributes['download_id']
       @requested_at = DateTime.parse(attributes['request_date']) if attributes['request_date']
 
+      @in_app = []
       if attributes['in_app']
-        @in_app = []
         attributes['in_app'].each do |in_app_purchase_attributes|
           @in_app << InAppReceipt.new(in_app_purchase_attributes)
         end

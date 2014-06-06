@@ -5,22 +5,32 @@ module Venice
     # For detailed explanations on these keys/values, see
     # https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW12
 
-    # The number of items purchased. This value corresponds to the quantity property of the SKPayment object stored in the transaction’s payment property.
+    # The number of items purchased. This value corresponds to the quantity property of
+    # the SKPayment object stored in the transaction’s payment property.
     attr_reader :quantity
 
-    # The product identifier of the item that was purchased. This value corresponds to the productIdentifier property of the SKPayment object stored in the transaction’s payment property.
+    # The product identifier of the item that was purchased. This value corresponds to
+    # the productIdentifier property of the SKPayment object stored in the transaction’s
+    # payment property.
     attr_reader :product_id
 
-    # The transaction identifier of the item that was purchased. This value corresponds to the transaction’s transactionIdentifier property.
+    # The transaction identifier of the item that was purchased. This value corresponds
+    # to the transaction’s transactionIdentifier property.
     attr_reader :transaction_id
 
-    # The date and time this transaction occurred. This value corresponds to the transaction’s transactionDate property.
-    attr_reader :purchase_date
+    # The date and time this transaction occurred. This value corresponds to the
+    # transaction’s transactionDate property.
+    attr_reader :purchased_at
 
-    # A string that the App Store uses to uniquely identify the application that created the payment transaction. If your server supports multiple applications, you can use this value to differentiate between them. Applications that are executing in the sandbox do not yet have an app-item-id assigned to them, so this key is missing from receipts created by the sandbox.
+    # A string that the App Store uses to uniquely identify the application that created
+    # the payment transaction. If your server supports multiple applications, you can use
+    # this value to differentiate between them. Applications that are executing in the
+    # sandbox do not yet have an app-item-id assigned to them, so this key is missing from
+    # receipts created by the sandbox.
     attr_reader :app_item_id
 
-    # An arbitrary number that uniquely identifies a revision of your application. This key is missing in receipts created by the sandbox.
+    # An arbitrary number that uniquely identifies a revision of your application. This key
+    # is missing in receipts created by the sandbox.
     attr_reader :version_external_identifier
 
     # For a transaction that restores a previous transaction, this is the original receipt
@@ -37,7 +47,7 @@ module Venice
       @quantity = Integer(attributes['quantity']) if attributes['quantity']
       @product_id = attributes['product_id']
       @transaction_id = attributes['transaction_id']
-      @purchase_date = DateTime.parse(attributes['purchase_date']) if attributes['purchase_date']
+      @purchased_at = DateTime.parse(attributes['purchase_date']) if attributes['purchase_date']
       @app_item_id = attributes['app_item_id']
       @version_external_identifier = attributes['version_external_identifier']
 
@@ -57,7 +67,7 @@ module Venice
 
     end
 
-    def to_h
+    def to_hash
       {
         :quantity => @quantity,
         :product_id => @product_id,
@@ -71,9 +81,10 @@ module Venice
         :cancellation_at => (@cancellation_at.httpdate rescue nil)
       }
     end
+    alias_method :to_h, :to_hash
 
     def to_json
-      self.to_h.to_json
+      self.to_hash.to_json
     end
 
   end
