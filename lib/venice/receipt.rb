@@ -61,7 +61,7 @@ module Venice
         :bundle_id => @bundle_id,
         :application_version => @application_version,
         :original_application_version => @original_application_version,
-        :original_purchase_date => @original_purchase_date.httpdate rescue nil,
+        :original_purchase_date => (@original_purchase_date.httpdate rescue nil),
         :expires_at => (@expires_at.httpdate rescue nil),
         :receipt_type => @receipt_type,
         :adam_id => @adam_id,
