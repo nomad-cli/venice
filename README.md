@@ -31,20 +31,33 @@ Venice also comes with the `iap` binary, which provides a convenient way to veri
 
     $ iap verify /path/to/receipt
 
-    +-----------------------------+-------------------------------+
-    |                           Receipt                           |
-    +-----------------------------+-------------------------------+
-    | app_item_id                 |                               |
-    | bid                         | com.foo.bar                   |
-    | bvrs                        | 20120427                      |
-    | original_purchase_date      | Sun, 01 Jan 2013 12:00:00 GMT |
-    | original_transaction_id     | 1000000000000001              |
-    | product_id                  | com.example.product           |
-    | purchase_date               | Sun, 01 Jan 2013 12:00:00 GMT |
-    | quantity                    | 1                             |
-    | transaction_id              | 1000000000000001              |
-    | version_external_identifier |                               |
-    +-----------------------------+-------------------------------+
+    +--------------------------------+------------------------------------+
+    |                               Receipt                               |
+    +--------------------------------+------------------------------------+
+    | adam_id                        | 664753504                          |
+    | application_version            | 123                                |
+    | bundle_id                      | com.example.product                |
+    | download_id                    | 30000000000005                     |
+    | expires_at                     |                                    |
+    | latest_receipt                 |                                    |
+    | original_application_version   | 123                                |
+    | original_purchase_date         | Fri, 07 Mar 2014 20:59:24 GMT      |
+    | receipt_type                   | Production                         |
+    | requested_at                   | Mon, 23 Jun 2014 17:59:38 GMT      |
+    +--------------------------------+------------------------------------+
+    | in_app                         | 1                                  |
+    |  - app_item_id                 |                                    |
+    |  - cancellation_at             |                                    |
+    |  - expires_at                  |                                    |
+    |  - original_purchase_date      |                                    |
+    |  - original_transaction_id     | 1000000000000001                   |
+    |  - product_id                  | com.example.product                |
+    |  - purchase_date               |                                    |
+    |  - quantity                    | 1                                  |
+    |  - transaction_id              | 1000000000000001                   |
+    |  - version_external_identifier |                                    |
+    +--------------------------------+------------------------------------+
+
 
 ## Contact
 
