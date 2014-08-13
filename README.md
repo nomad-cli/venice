@@ -1,4 +1,4 @@
-![Venice](https://raw.github.com/mattt/nomad-cli.com/assets/venice-banner.png)
+![Venice](https://raw.github.com/nomad/nomad.github.io/assets/venice-banner.png)
 
 Venice is a simple gem for verifying Apple In-App Purchase receipts, and retrieving the information associated with receipt data.
 
