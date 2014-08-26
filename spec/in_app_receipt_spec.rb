@@ -23,7 +23,7 @@ describe Venice::InAppReceipt do
       }
     end
 
-    subject do
+    subject(:in_app_receipt) do
       Venice::InAppReceipt.new attributes
     end
 
@@ -40,6 +40,15 @@ describe Venice::InAppReceipt do
       subject.original.should be_instance_of Venice::InAppReceipt
       subject.original.transaction_id.should == "140xxx867509"
       subject.original.purchased_at.should be_instance_of DateTime
+    end
+
+    it "should output a hash with attributes" do
+      in_app_receipt.to_h.should include(:quantity => 1,
+                                          :product_id => "com.foo.product1",
+                                          :transaction_id => "1000000070107235",
+                                          :purchase_date => "Wed, 28 May 2014 14:47:53 GMT",
+                                          :original_purchase_date => "Wed, 28 May 2014 14:47:53 GMT"
+                                        )
     end
 
 
