@@ -37,7 +37,7 @@ module Venice
         receipt = Receipt.new(receipt_attributes)
 
         if latest_receipt_attributes = json['latest_receipt_info']
-          receipt.latest = Receipt.new(latest_receipt_attributes)
+          receipt.latest = Receipt.new(latest_receipt_attributes.last)
         end
 
         if latest_expired_receipt_attributes = json['latest_expired_receipt_info']
