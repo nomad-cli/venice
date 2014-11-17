@@ -29,6 +29,8 @@ module Venice
     end
 
     def verify!(data, options = {})
+      @shared_secret = options[:shared_secret]
+      
       json = json_response_from_verifying_data(data)
       status, receipt_attributes = json['status'].to_i, json['receipt']
 
