@@ -1,6 +1,6 @@
 unless ENV['CI']
   require 'simplecov'
-  
+
   SimpleCov.start do
     add_filter 'spec'
     add_filter '.bundle'
@@ -9,3 +9,11 @@ end
 
 require 'venice'
 require 'rspec'
+
+RSpec.configure do |config|
+
+  config.mock_with :rspec do |mocks|
+    mocks.yield_receiver_to_any_instance_implementation_blocks = false
+  end
+
+end
