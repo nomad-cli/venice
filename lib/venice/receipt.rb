@@ -2,83 +2,79 @@ require 'time'
 
 module Venice
   class Receipt
-    # The number of items purchased. This value corresponds to the quantity property of the SKPayment object stored in the transaction’s payment property.
-    attr_reader :quantity
+    # For detailed explanations on these keys/values, see
+    # https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW1
 
-    # The product identifier of the item that was purchased. This value corresponds to the productIdentifier property of the SKPayment object stored in the transaction’s payment property.
-    attr_reader :product_id
+    # The app’s bundle identifier.
+    attr_reader :bundle_id
 
-    # The transaction identifier of the item that was purchased. This value corresponds to the transaction’s transactionIdentifier property.
-    attr_reader :transaction_id
+    # The app’s version number.
+    attr_reader :application_version
 
-    # The date and time this transaction occurred. This value corresponds to the transaction’s transactionDate property.
-    attr_reader :purchase_date
+    # The receipt for an in-app purchase.
+    attr_reader :in_app
 
-    # A string that the App Store uses to uniquely identify the application that created the payment transaction. If your server supports multiple applications, you can use this value to differentiate between them. Applications that are executing in the sandbox do not yet have an app-item-id assigned to them, so this key is missing from receipts created by the sandbox.
-    attr_reader :app_item_id
+    # The version of the app that was originally purchased.
+    attr_reader :original_application_version
 
-    # An arbitrary number that uniquely identifies a revision of your application. This key is missing in receipts created by the sandbox.
-    attr_reader :version_external_identifier
+    # The original purchase date
+    attr_reader :original_purchase_date
 
-    # The bundle identifier for the application.
-    attr_reader :bid
-
-    # A version number for the application.
-    attr_reader :bvrs
-
-    # For a transaction that restores a previous transaction, this is the original receipt
-    attr_accessor :original
-
-    # For an active subscription was renewed with transaction that took place after the receipt your server sent to the App Store, this is the latest receipt.
-    attr_accessor :latest
-
-    # For an expired auto-renewable subscription, this contains the receipt details for the latest expired receipt
-    attr_accessor :latest_expired
-
-    # For auto-renewable subscriptions, returns the date the subscription will expire
+    # The date that the app receipt expires.
     attr_reader :expires_at
 
+    # Non-Documented receipt keys/values
+    attr_reader :receipt_type
+    attr_reader :adam_id
+    attr_reader :download_id
+    attr_reader :requested_at
+
+    attr_accessor :latest_receipt
+
     def initialize(attributes = {})
-      @quantity = Integer(attributes['quantity']) if attributes['quantity']
-      @product_id = attributes['product_id']
-      @transaction_id = attributes['transaction_id']
-      @purchase_date = DateTime.parse(attributes['purchase_date']) if attributes['purchase_date']
-      @app_item_id = attributes['app_item_id']
-      @version_external_identifier = attributes['version_external_identifier']
-      @bid = attributes['bid']
-      @bvrs = attributes['bvrs']
-
-      # expires_date is in ms since the Epoch, Time.at expects seconds
-      @expires_at = Time.at(attributes['expires_date'].to_i / 1000) if attributes['expires_date']
-
-      if attributes['original_transaction_id'] || attributes['original_purchase_date']
-        original_attributes = {
-          'transaction_id' => attributes['original_transaction_id'],
-          'purchase_date' => attributes['original_purchase_date']
-        }
-
-        self.original = Receipt.new(original_attributes)
+      @bundle_id = attributes['bundle_id']
+      @application_version = attributes['application_version']
+      @original_application_version = attributes['original_application_version']
+      if attributes['original_purchase_date']
+        @original_purchase_date = DateTime.parse(attributes['original_purchase_date'])
       end
+      if attributes['expiration_date']
+        @expires_at = Time.at(attributes['expiration_date'].to_i / 1000).to_datetime
+      end
+
+      @receipt_type = attributes['receipt_type']
+      @adam_id = attributes['adam_id']
+      @download_id = attributes['download_id']
+      @requested_at = DateTime.parse(attributes['request_date']) if attributes['request_date']
+
+      @in_app = []
+      if attributes['in_app']
+        attributes['in_app'].each do |in_app_purchase_attributes|
+          @in_app << InAppReceipt.new(in_app_purchase_attributes)
+        end
+      end
+
     end
 
-    def to_h
+    def to_hash
       {
-        :quantity => @quantity,
-        :product_id => @product_id,
-        :transaction_id => @transaction_id,
-        :purchase_date => (@purchase_date.httpdate rescue nil),
-        :original_transaction_id => (@original.transaction_id rescue nil),
-        :original_purchase_date => (@original.purchase_date.httpdate rescue nil),
-        :app_item_id => @app_item_id,
-        :version_external_identifier => @version_external_identifier,
-        :bid => @bid,
-        :bvrs => @bvrs,
-        :expires_at => (@expires_at.httpdate rescue nil)
+        :bundle_id => @bundle_id,
+        :application_version => @application_version,
+        :original_application_version => @original_application_version,
+        :original_purchase_date => (@original_purchase_date.httpdate rescue nil),
+        :expires_at => (@expires_at.httpdate rescue nil),
+        :receipt_type => @receipt_type,
+        :adam_id => @adam_id,
+        :download_id => @download_id,
+        :requested_at => (@requested_at.httpdate rescue nil),
+        :in_app => @in_app.map{|iap| iap.to_h },
+        :latest_receipt => @latest_receipt
       }
     end
+    alias_method :to_h, :to_hash
 
     def to_json
-      self.to_h.to_json
+      self.to_hash.to_json
     end
 
     class << self
@@ -111,9 +107,11 @@ module Venice
 
     class VerificationError < StandardError
       attr_accessor :code
+      attr_accessor :receipt
 
-      def initialize(code)
+      def initialize(code, receipt)
         @code = Integer(code)
+        @receipt = receipt
       end
 
       def message
