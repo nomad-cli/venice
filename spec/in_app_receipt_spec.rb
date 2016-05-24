@@ -19,7 +19,8 @@ describe Venice::InAppReceipt do
         "is_trial_period" => false,
         "version_external_identifier" => "123",
         "app_item_id" => 'com.foo.app1',
-        "expires_date" => "2014-06-28 07:47:53 America/Los_Angeles"
+        "expires_date" => "2014-06-28 07:47:53 America/Los_Angeles",
+        "expires_date_ms" => "1403941673000"
       }
     end
 
