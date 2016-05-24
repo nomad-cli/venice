@@ -52,7 +52,8 @@ module Venice
       @version_external_identifier = attributes['version_external_identifier']
 
       # expires_date is in ms since the Epoch, Time.at expects seconds
-      @expires_at = Time.at(attributes['expires_date'].to_i / 1000) if attributes['expires_date']
+      @expires_at = Time.at(attributes['expires_date_ms'].to_i / 1000) if attributes['expires_date_ms']
+
       # cancellation_date is in ms since the Epoch, Time.at expects seconds
       @cancellation_date = Time.at(attributes['cancellation_date'].to_i / 1000) if attributes['cancellation_date']
 
