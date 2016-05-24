@@ -24,17 +24,35 @@ describe Venice::Client do
       let(:secret) { "shhhhhh" }
 
       before do
-        client.shared_secret = secret
         Venice::Receipt.stub :new
       end
 
-      it "should include the secret in the post" do
-        Net::HTTP.any_instance.should_receive(:request) do |post|
-          post.body.should eq({'receipt-data' => receipt_data, 'password' => secret}.to_json)
-          post
+      context "set secret manually" do
+        before do
+          client.shared_secret = secret
         end
-        client.verify! receipt_data
+
+        it "should include the secret in the post" do
+          Net::HTTP.any_instance.should_receive(:request) do |post|
+            post.body.should eq({'receipt-data' => receipt_data, 'password' => secret}.to_json)
+            post
+          end
+          client.verify! receipt_data
+        end
       end
+
+      context "set secret when verification" do
+        let(:options) { {shared_secret: secret}  }
+
+        it "should include the secret in the post" do
+          Net::HTTP.any_instance.should_receive(:request) do |post|
+            post.body.should eq({'receipt-data' => receipt_data, 'password' => secret}.to_json)
+            post
+          end
+          client.verify! receipt_data, options
+        end
+      end
+
     end
 
     context "with a latest receipt info attribute" do
