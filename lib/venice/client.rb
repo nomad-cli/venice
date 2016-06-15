@@ -34,6 +34,7 @@ module Venice
 
       json = json_response_from_verifying_data(data)
       status, receipt_attributes = json['status'].to_i, json['receipt']
+      receipt_attributes['original_json_response'] = json if receipt_attributes
 
       case status
       when 0, 21006
