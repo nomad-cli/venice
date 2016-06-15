@@ -29,7 +29,7 @@ module Venice
     attr_reader :download_id
     attr_reader :requested_at
 
-    attr_accessor :latest_receipt
+    attr_accessor :latest_receipt_info
 
     def initialize(attributes = {})
       @bundle_id = attributes['bundle_id']
@@ -68,7 +68,7 @@ module Venice
         :download_id => @download_id,
         :requested_at => (@requested_at.httpdate rescue nil),
         :in_app => @in_app.map{|iap| iap.to_h },
-        :latest_receipt => @latest_receipt
+        :latest_receipt_info => @latest_receipt_info
       }
     end
     alias_method :to_h, :to_hash
