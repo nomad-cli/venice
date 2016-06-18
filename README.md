@@ -15,12 +15,38 @@ See Apple's [In-App Purchase Programming Guide](http://developer.apple.com/libra
 
 ## Usage
 
+### Basic
+
 ```ruby
 require 'venice'
 
 data = "(Base64-Encoded Receipt Data)"
 if receipt = Venice::Receipt.verify(data)
   p receipt.to_h
+
+  # You can refer an original JSON response via a Receipt instance.
+  case receipt.original_json_response['status'].to_i
+    when 0     then foo
+    when 21006 then bar
+  end
+end
+```
+
+### For Auto-Renewable
+
+```ruby
+require 'venice'
+
+data = "(Base64-Encoded Receipt Data)"
+
+# You must pass shared secret when verification on Auto-Renewable
+opts = {
+  shared_secret: 'your key'
+}
+if receipt = Venice::Receipt.verify(data, opts)
+  # Renewed receipts are added into `latest_receipt_info` array.
+  p receipt.latest_receipt_info.map(&:expires_at)
+  # => [2016-05-19 20:35:59 +0000, 2016-06-18 20:35:59 +0000, 2016-07-18 20:35:59 +0000]
 end
 ```
 
