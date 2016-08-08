@@ -30,9 +30,11 @@ module Venice
 
     def verify!(data, options = {})
       @verification_url ||= ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
+      @shared_secret = options[:shared_secret] if options[:shared_secret]
 
       json = json_response_from_verifying_data(data)
       status, receipt_attributes = json['status'].to_i, json['receipt']
+      receipt_attributes['original_json_response'] = json if receipt_attributes
 
       case status
       when 0, 21006
@@ -42,7 +44,12 @@ module Venice
         # > Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
         # > The JSON representation of the receipt for the most recent renewal
         if latest_receipt_info_attributes = json['latest_receipt_info']
-          receipt.latest_receipt = Receipt.new(latest_receipt_info_attributes)
+          # AppStore returns 'latest_receipt_info' even if we use over iOS 6. Besides, its format is an Array.
+          receipt.latest_receipt_info = []
+          latest_receipt_info_attributes.each do |latest_receipt_info_attribute|
+            # latest_receipt_info format is identical with in_app
+            receipt.latest_receipt_info << InAppReceipt.new(latest_receipt_info_attribute)
+          end
         end
 
         return receipt
