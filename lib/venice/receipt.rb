@@ -132,6 +132,8 @@ module Venice
             "This receipt is a sandbox receipt, but it was sent to the production service for verification."
           when 21008
             "This receipt is a production receipt, but it was sent to the sandbox service for verification."
+          when 21010
+            "This receipt could not be authorized. Treat this the same as if a purchase was never made."
           else
             "Unknown Error: #{@code}"
         end
