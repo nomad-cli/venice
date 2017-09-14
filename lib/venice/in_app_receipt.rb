@@ -55,7 +55,7 @@ module Venice
       @expires_at = Time.at(attributes['expires_date_ms'].to_i / 1000) if attributes['expires_date_ms']
 
       # cancellation_date is in ms since the Epoch, Time.at expects seconds
-      @cancellation_at = Time.at(attributes['cancellation_date'].to_i / 1000) if attributes['cancellation_date']
+      @cancellation_at = Time.at(attributes['cancellation_date_ms'].to_i / 1000) if attributes['cancellation_date_ms']
 
       if attributes['original_transaction_id'] || attributes['original_purchase_date']
         original_attributes = {
