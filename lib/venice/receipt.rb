@@ -34,6 +34,7 @@ module Venice
 
     attr_accessor :latest_receipt_info
 
+    # Information about the status of the customer's auto-renewable subscriptions
     attr_reader :pending_renewal_info
 
     def initialize(attributes = {})
