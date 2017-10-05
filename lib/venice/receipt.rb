@@ -32,8 +32,10 @@ module Venice
     # Original json response from AppStore
     attr_reader :original_json_response
 
-
     attr_accessor :latest_receipt_info
+
+    # Information about the status of the customer's auto-renewable subscriptions
+    attr_reader :pending_renewal_info
 
     def initialize(attributes = {})
       @original_json_response = attributes['original_json_response']
@@ -60,6 +62,13 @@ module Venice
         end
       end
 
+      @pending_renewal_info = []
+      if original_json_response && original_json_response['pending_renewal_info']
+        original_json_response['pending_renewal_info'].each do |pending_renewal_attributes|
+          @pending_renewal_info << PendingRenewalInfo.new(pending_renewal_attributes)
+        end
+      end
+
     end
 
     def to_hash
@@ -74,6 +83,7 @@ module Venice
         :download_id => @download_id,
         :requested_at => (@requested_at.httpdate rescue nil),
         :in_app => @in_app.map{|iap| iap.to_h },
+        :pending_renewal_info => @pending_renewal_info.map { |pend_info| pend_info.to_h },
         :latest_receipt_info => @latest_receipt_info
       }
     end
