@@ -35,7 +35,19 @@ describe Venice::Receipt do
               "expires_date" => "2014-06-28 14:47:53 Etc/GMT",
               "is_trial_period" => "false"
             }
-          ]
+          ],
+          "original_json_response" => {
+            "pending_renewal_info" => [
+              {
+                "auto_renew_product_id"=>"com.foo.product1",
+                "original_transaction_id"=>"37xxxxxxxxx89",
+                "product_id"=>"com.foo.product1",
+                "auto_renew_status"=>"0",
+                "is_in_billing_retry_period"=>"0",
+                "expiration_intent"=>"1"
+              }
+            ]
+          }
         }
       }
     end
@@ -64,6 +76,17 @@ describe Venice::Receipt do
       it "should create the receipt" do
         receipt.should_not be_nil
       end
+    end
+
+    it "parses the pending rerenewal information" do
+      expect(subject.to_hash[:pending_renewal_info]).to eql([{ :expiration_intent => 1,
+                                                               :auto_renew_status => 0,
+                                                               :auto_renew_product_id=>"com.foo.product1",
+                                                               :is_in_billing_retry_period=>false,
+                                                               :product_id=>"com.foo.product1",
+                                                               :price_consent_status=>nil,
+                                                               :cancellation_reason=>nil
+                                                             }])
     end
 
   end
