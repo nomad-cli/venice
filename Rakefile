@@ -1,9 +1,6 @@
-require 'bundler/setup'
+require 'bundler/gem_tasks'
+require 'rspec/core/rake_task'
 
-gemspec = eval(File.read("venice.gemspec"))
+RSpec::Core::RakeTask.new(:spec)
 
-task :build => "#{gemspec.full_name}.gem"
-
-file "#{gemspec.full_name}.gem" => gemspec.files + ["venice.gemspec"] do
-  system "gem build venice.gemspec"
-end
+task default: :spec
