@@ -9,6 +9,7 @@ end
 
 require 'venice'
 require 'rspec'
+require 'rspec/its'
 
 RSpec.configure do |config|
 
