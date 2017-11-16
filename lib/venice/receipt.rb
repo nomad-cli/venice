@@ -150,6 +150,8 @@ module Venice
             "This receipt is a production receipt, but it was sent to the sandbox service for verification."
           when 21010
             "This receipt could not be authorized. Treat this the same as if a purchase was never made."
+          when 21100..21199
+            "Internal data access error."
           else
             "Unknown Error: #{@code}"
         end
