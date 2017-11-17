@@ -5,6 +5,24 @@ describe Venice::Client do
   let(:client) { subject }
 
   describe "#verify!" do
+    context "with a receipt response" do
+      before do
+        client.stub(:json_response_from_verifying_data).and_return(response)
+      end
+
+      let(:response) do
+        {
+          'status' => 0,
+          'receipt' => {},
+        }
+      end
+
+      it "does not generate a self-referencing Hash" do
+        receipt = client.verify! 'asdf'
+        expect(receipt.original_json_response["receipt"]).not_to have_key("original_json_response")
+      end
+    end
+
     context "no shared_secret" do
       before do
         client.shared_secret = nil
