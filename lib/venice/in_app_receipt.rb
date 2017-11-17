@@ -42,7 +42,6 @@ module Venice
     # For a transaction that was canceled by Apple customer support, the time and date of the cancellation.
     attr_reader :cancellation_at
 
-
     def initialize(attributes = {})
       @quantity = Integer(attributes['quantity']) if attributes['quantity']
       @product_id = attributes['product_id']
@@ -65,28 +64,26 @@ module Venice
 
         self.original = InAppReceipt.new(original_attributes)
       end
-
     end
 
     def to_hash
       {
-        :quantity => @quantity,
-        :product_id => @product_id,
-        :transaction_id => @transaction_id,
-        :purchase_date => (@purchased_at.httpdate rescue nil),
-        :original_transaction_id => (@original.transaction_id rescue nil),
-        :original_purchase_date => (@original.purchased_at.httpdate rescue nil),
-        :app_item_id => @app_item_id,
-        :version_external_identifier => @version_external_identifier,
-        :expires_at => (@expires_at.httpdate rescue nil),
-        :cancellation_at => (@cancellation_at.httpdate rescue nil)
+        quantity: @quantity,
+        product_id: @product_id,
+        transaction_id: @transaction_id,
+        purchase_date: (@purchased_at.httpdate rescue nil),
+        original_transaction_id: (@original.transaction_id rescue nil),
+        original_purchase_date: (@original.purchased_at.httpdate rescue nil),
+        app_item_id: @app_item_id,
+        version_external_identifier: @version_external_identifier,
+        expires_at: (@expires_at.httpdate rescue nil),
+        cancellation_at: (@cancellation_at.httpdate rescue nil)
       }
     end
     alias_method :to_h, :to_hash
 
     def to_json
-      self.to_hash.to_json
+      to_hash.to_json
     end
-
   end
 end

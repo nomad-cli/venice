@@ -1,8 +1,7 @@
 module Venice
   class PendingRenewalInfo
-
     # For an expired subscription, the reason for the subscription expiration.
-    # This key is only present for a receipt containing an expired auto-renewable subscription. 
+    # This key is only present for a receipt containing an expired auto-renewable subscription.
     attr_reader :expiration_intent
 
     # The current renewal status for the auto-renewable subscription.
@@ -29,14 +28,13 @@ module Venice
     # Use this value along with the cancellation date to identify possible issues in your app that may lead customers to contact Apple customer support.
     attr_reader :cancellation_reason
 
-
     def initialize(attributes)
       @expiration_intent = Integer(attributes['expiration_intent']) if attributes['expiration_intent']
       @auto_renew_status = Integer(attributes['auto_renew_status']) if attributes['auto_renew_status']
       @auto_renew_product_id = attributes['auto_renew_product_id']
 
       if attributes['is_in_billing_retry_period']
-        @is_in_billing_retry_period = (attributes[is_in_billing_retry_period] == "1" ? true : false)
+        @is_in_billing_retry_period = (attributes[is_in_billing_retry_period] == '1')
       end
 
       @product_id = attributes['product_id']
@@ -60,7 +58,7 @@ module Venice
     alias_method :to_h, :to_hash
 
     def to_json
-      self.to_hash.to_json
+      to_hash.to_json
     end
   end
 end

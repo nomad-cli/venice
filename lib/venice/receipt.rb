@@ -68,29 +68,28 @@ module Venice
           @pending_renewal_info << PendingRenewalInfo.new(pending_renewal_attributes)
         end
       end
-
     end
 
     def to_hash
       {
-        :bundle_id => @bundle_id,
-        :application_version => @application_version,
-        :original_application_version => @original_application_version,
-        :original_purchase_date => (@original_purchase_date.httpdate rescue nil),
-        :expires_at => (@expires_at.httpdate rescue nil),
-        :receipt_type => @receipt_type,
-        :adam_id => @adam_id,
-        :download_id => @download_id,
-        :requested_at => (@requested_at.httpdate rescue nil),
-        :in_app => @in_app.map{|iap| iap.to_h },
-        :pending_renewal_info => @pending_renewal_info.map { |pend_info| pend_info.to_h },
-        :latest_receipt_info => @latest_receipt_info
+        bundle_id: @bundle_id,
+        application_version: @application_version,
+        original_application_version: @original_application_version,
+        original_purchase_date: (@original_purchase_date.httpdate rescue nil),
+        expires_at: (@expires_at.httpdate rescue nil),
+        receipt_type: @receipt_type,
+        adam_id: @adam_id,
+        download_id: @download_id,
+        requested_at: (@requested_at.httpdate rescue nil),
+        in_app: @in_app.map(&:to_h),
+        pending_renewal_info: @pending_renewal_info.map(&:to_h),
+        latest_receipt_info: @latest_receipt_info
       }
     end
     alias_method :to_h, :to_hash
 
     def to_json
-      self.to_hash.to_json
+      to_hash.to_json
     end
 
     class << self
@@ -132,28 +131,28 @@ module Venice
 
       def message
         case @code
-          when 21000
-            "The App Store could not read the JSON object you provided."
-          when 21002
-            "The data in the receipt-data property was malformed."
-          when 21003
-            "The receipt could not be authenticated."
-          when 21004
-            "The shared secret you provided does not match the shared secret on file for your account."
-          when 21005
-            "The receipt server is not currently available."
-          when 21006
-            "This receipt is valid but the subscription has expired. When this status code is returned to your server, the receipt data is also decoded and returned as part of the response."
-          when 21007
-            "This receipt is a sandbox receipt, but it was sent to the production service for verification."
-          when 21008
-            "This receipt is a production receipt, but it was sent to the sandbox service for verification."
-          when 21010
-            "This receipt could not be authorized. Treat this the same as if a purchase was never made."
-          when 21100..21199
-            "Internal data access error."
-          else
-            "Unknown Error: #{@code}"
+        when 21000
+          'The App Store could not read the JSON object you provided.'
+        when 21002
+          'The data in the receipt-data property was malformed.'
+        when 21003
+          'The receipt could not be authenticated.'
+        when 21004
+          'The shared secret you provided does not match the shared secret on file for your account.'
+        when 21005
+          'The receipt server is not currently available.'
+        when 21006
+          'This receipt is valid but the subscription has expired. When this status code is returned to your server, the receipt data is also decoded and returned as part of the response.'
+        when 21007
+          'This receipt is a sandbox receipt, but it was sent to the production service for verification.'
+        when 21008
+          'This receipt is a production receipt, but it was sent to the sandbox service for verification.'
+        when 21010
+          'This receipt could not be authorized. Treat this the same as if a purchase was never made.'
+        when 21100..21199
+          'Internal data access error.'
+        else
+          "Unknown Error: #{@code}"
         end
       end
     end

@@ -3,8 +3,8 @@ require 'net/https'
 require 'uri'
 
 module Venice
-  ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT = "https://buy.itunes.apple.com/verifyReceipt"
-  ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT = "https://sandbox.itunes.apple.com/verifyReceipt"
+  ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT = 'https://buy.itunes.apple.com/verifyReceipt'
+  ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'
 
   class Client
     attr_accessor :verification_url
@@ -12,13 +12,13 @@ module Venice
 
     class << self
       def development
-        client = self.new
+        client = new
         client.verification_url = ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
         client
       end
 
       def production
-        client = self.new
+        client = new
         client.verification_url = ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT
         client
       end
@@ -33,7 +33,8 @@ module Venice
       @shared_secret = options[:shared_secret] if options[:shared_secret]
 
       json = json_response_from_verifying_data(data)
-      status, receipt_attributes = json['status'].to_i, json['receipt'].dup
+      status = json['status'].to_i
+      receipt_attributes = json['receipt'].dup
       receipt_attributes['original_json_response'] = json if receipt_attributes
 
       case status
@@ -73,8 +74,8 @@ module Venice
       http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 
       request = Net::HTTP::Post.new(uri.request_uri)
-      request['Accept'] = "application/json"
-      request['Content-Type'] = "application/json"
+      request['Accept'] = 'application/json'
+      request['Content-Type'] = 'application/json'
       request.body = parameters.to_json
 
       response = http.request(request)
