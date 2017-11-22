@@ -112,5 +112,50 @@ describe Venice::Client do
         receipt.latest_receipt_info.should_not be_nil
       end
     end
+
+    context 'with an error response' do
+      before do
+        client.stub(:json_response_from_verifying_data).and_return(response)
+      end
+
+      let(:response) do
+        {
+          'status' => 21000,
+          'receipt' => {}
+        }
+      end
+
+      it 'raises a VerificationError' do
+        expect {
+          client.verify!('asdf')
+        }.to raise_error(Venice::Receipt::VerificationError) do |error|
+          expect(error.json).to eq(response)
+          expect(error.code).to eq(21000)
+          expect(error).not_to be_retryable
+        end
+      end
+    end
+
+    context 'with a retryable error response' do
+      before do
+        client.stub(:json_response_from_verifying_data).and_return(response)
+      end
+
+      let(:response) do
+        {
+          'status' => 21000,
+          'receipt' => {},
+          'is-retryable' => true
+        }
+      end
+
+      it 'raises a VerificationError' do
+        expect {
+          client.verify!('asdf')
+        }.to raise_error(Venice::Receipt::VerificationError) do |error|
+          expect(error).to be_retryable
+        end
+      end
+    end
   end
 end
