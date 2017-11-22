@@ -33,11 +33,10 @@ module Venice
       @shared_secret = options[:shared_secret] if options[:shared_secret]
 
       json = json_response_from_verifying_data(data)
-      status = json['status'].to_i
       receipt_attributes = json['receipt'].dup
       receipt_attributes['original_json_response'] = json if receipt_attributes
 
-      case status
+      case json['status'].to_i
       when 0, 21006
         receipt = Receipt.new(receipt_attributes)
 
@@ -55,7 +54,7 @@ module Venice
 
         return receipt
       else
-        raise Receipt::VerificationError.new(status, receipt)
+        raise Receipt::VerificationError.new(json)
       end
     end
 

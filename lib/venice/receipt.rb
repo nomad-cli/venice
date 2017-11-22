@@ -121,16 +121,23 @@ module Venice
     end
 
     class VerificationError < StandardError
+      attr_accessor :json
       attr_accessor :code
-      attr_accessor :receipt
 
-      def initialize(code, receipt)
-        @code = Integer(code)
-        @receipt = receipt
+      def initialize(json)
+        @json = json
+      end
+
+      def code
+        Integer(json['status'])
+      end
+
+      def retryable?
+        json['is-retryable']
       end
 
       def message
-        case @code
+        case code
         when 21000
           'The App Store could not read the JSON object you provided.'
         when 21002
@@ -152,7 +159,7 @@ module Venice
         when 21100..21199
           'Internal data access error.'
         else
-          "Unknown Error: #{@code}"
+          "Unknown Error: #{code}"
         end
       end
     end
