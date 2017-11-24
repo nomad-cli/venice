@@ -122,7 +122,6 @@ module Venice
 
     class VerificationError < StandardError
       attr_accessor :json
-      attr_accessor :code
 
       def initialize(json)
         @json = json
