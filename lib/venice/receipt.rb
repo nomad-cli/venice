@@ -37,6 +37,9 @@ module Venice
     # Information about the status of the customer's auto-renewable subscriptions
     attr_reader :pending_renewal_info
 
+    # The endpoint at which verification happened.
+    attr_reader :verified_endpoint_type
+
     def initialize(attributes = {})
       @original_json_response = attributes['original_json_response']
 
@@ -54,6 +57,7 @@ module Venice
       @adam_id = attributes['adam_id']
       @download_id = attributes['download_id']
       @requested_at = DateTime.parse(attributes['request_date']) if attributes['request_date']
+      @verified_endpoint_type = attributes['verified_endpoint_type']
 
       @in_app = []
       if attributes['in_app']

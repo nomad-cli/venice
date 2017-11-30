@@ -157,5 +157,15 @@ describe Venice::Client do
         end
       end
     end
+
+    context "verified environment" do
+      it "has correct endpoint_type" do
+        dev_client = Venice::Client.development
+        prod_client = Venice::Client.production
+
+        expect(dev_client.endpoint_type).to eq(:development)
+        expect(prod_client.endpoint_type).to eq(:production)
+      end
+    end
   end
 end

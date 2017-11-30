@@ -75,6 +75,10 @@ describe Venice::Receipt do
       it 'should create the receipt' do
         receipt.should_not be_nil
       end
+
+      it "has the correct verified_endpoint_type" do
+        expect(receipt.verified_endpoint_type).to eq(:production)
+      end
     end
 
     it 'parses the pending rerenewal information' do

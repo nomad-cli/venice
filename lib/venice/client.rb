@@ -34,7 +34,11 @@ module Venice
 
       json = json_response_from_verifying_data(data)
       receipt_attributes = json['receipt'].dup if json['receipt']
-      receipt_attributes['original_json_response'] = json if receipt_attributes
+
+      if receipt_attributes
+        receipt_attributes['original_json_response'] = json
+        receipt_attributes['verified_endpoint_type'] = endpoint_type
+      end
 
       case json['status'].to_i
       when 0, 21006
@@ -55,6 +59,14 @@ module Venice
         return receipt
       else
         raise Receipt::VerificationError.new(json)
+      end
+    end
+
+    def endpoint_type
+      if verification_url == ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT
+        :production
+      elsif verification_url == ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
+        :development
       end
     end
 
