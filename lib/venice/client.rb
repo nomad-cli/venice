@@ -7,38 +7,30 @@ module Venice
   ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'
 
   class Client
-    attr_accessor :verification_url
-    attr_writer :shared_secret
-
     class << self
       def development
-        client = new
-        client.verification_url = ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
-        client
+        new(environment: :development)
       end
 
       def production
-        client = new
-        client.verification_url = ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT
-        client
+        new(environment: :production)
       end
     end
 
-    def initialize
-      @verification_url = ENV['IAP_VERIFICATION_ENDPOINT']
+    def initialize(environment: :production, verification_url: ENV['IAP_VERIFICATION_ENDPOINT'])
+      @environment = environment
+      @verification_url = verification_url || default_verification_url
     end
 
     def verify!(data, options = {})
-      @verification_url ||= ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
-      @shared_secret = options[:shared_secret] if options[:shared_secret]
-
-      json = json_response_from_verifying_data(data)
-      receipt_attributes = json['receipt'].dup if json['receipt']
-      receipt_attributes['original_json_response'] = json if receipt_attributes
+      json = json_response_from_verifying_data(data, options)
 
       case json['status'].to_i
       when 0, 21006
-        receipt = Receipt.new(receipt_attributes)
+        receipt = Receipt.new(
+          attributes: json['receipt'],
+          original_json_response: json
+        )
 
         # From Apple docs:
         # > Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
@@ -60,14 +52,23 @@ module Venice
 
     private
 
-    def json_response_from_verifying_data(data)
+    attr_reader :environment, :verification_url
+
+    def default_verification_url
+      case environment
+      when :production then ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT
+      when :development then ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
+      end
+    end
+
+    def json_response_from_verifying_data(data, options = {})
       parameters = {
         'receipt-data' => data
       }
 
-      parameters['password'] = @shared_secret if @shared_secret
+      parameters['password'] = options[:shared_secret] if options[:shared_secret]
 
-      uri = URI(@verification_url)
+      uri = URI(verification_url)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_PEER

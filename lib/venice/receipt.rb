@@ -37,8 +37,8 @@ module Venice
     # Information about the status of the customer's auto-renewable subscriptions
     attr_reader :pending_renewal_info
 
-    def initialize(attributes = {})
-      @original_json_response = attributes['original_json_response']
+    def initialize(attributes: {}, original_json_response: {})
+      @original_json_response = original_json_response
 
       @bundle_id = attributes['bundle_id']
       @application_version = attributes['application_version']
@@ -94,7 +94,9 @@ module Venice
 
     class << self
       def verify(data, options = {})
-        verify!(data, options) rescue false
+        verify!(data, options)
+      rescue VerificationError
+        false
       end
 
       def verify!(data, options = {})

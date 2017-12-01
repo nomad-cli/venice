@@ -36,33 +36,31 @@ describe Venice::Receipt do
               'is_trial_period' => 'false'
             }
           ],
-          'original_json_response' => {
-            'pending_renewal_info' => [
-              {
-                'auto_renew_product_id' => 'com.foo.product1',
-                'original_transaction_id' => '37xxxxxxxxx89',
-                'product_id' => 'com.foo.product1',
-                'auto_renew_status' => '0',
-                'is_in_billing_retry_period' => '0',
-                'expiration_intent' => '1'
-              }
-            ]
+        },
+        'pending_renewal_info' => [
+          {
+            'auto_renew_product_id' => 'com.foo.product1',
+            'original_transaction_id' => '37xxxxxxxxx89',
+            'product_id' => 'com.foo.product1',
+            'auto_renew_status' => '0',
+            'is_in_billing_retry_period' => '0',
+            'expiration_intent' => '1'
           }
-        }
+        ]
       }
     end
 
-    subject { Venice::Receipt.new(response['receipt']) }
+    subject { Venice::Receipt.new(attributes: response['receipt']) }
 
-    its(:bundle_id) { 'com.foo.bar' }
-    its(:application_version) { '2' }
+    its(:bundle_id) { should eql 'com.foo.bar' }
+    its(:application_version) { should eql '2' }
     its(:in_app) { should be_instance_of Array }
-    its(:original_application_version) { '1' }
+    its(:original_application_version) { should eql '1' }
     its(:original_purchase_date) { should be_instance_of DateTime }
     its(:expires_at) { should be_instance_of DateTime }
-    its(:receipt_type) { 'Production' }
-    its(:adam_id) { 7654321 }
-    its(:download_id) { 1234567 }
+    its(:receipt_type) { should eql 'Production' }
+    its(:adam_id) { should eql 7654321 }
+    its(:download_id) { should eql 1234567 }
     its(:requested_at) { should be_instance_of DateTime }
 
     describe '#verify!' do
@@ -78,7 +76,9 @@ describe Venice::Receipt do
     end
 
     it 'parses the pending rerenewal information' do
-      expect(subject.to_hash[:pending_renewal_info]).to eql([{ expiration_intent: 1,
+      receipt = Venice::Receipt.new(attributes: response['receipt'], original_json_response: response)
+
+      expect(receipt.to_hash[:pending_renewal_info]).to eql([{ expiration_intent: 1,
                                                                auto_renew_status: 0,
                                                                auto_renew_product_id: 'com.foo.product1',
                                                                is_in_billing_retry_period: false,
