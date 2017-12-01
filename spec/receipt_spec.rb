@@ -88,4 +88,25 @@ describe Venice::Receipt do
                                                                cancellation_reason: nil }])
     end
   end
+
+  describe 'sandbox fallback' do
+    it 'retries on sandbox and returns a development receipt' do
+      production_client_mock = Venice::Client.production
+      development_client_mock = Venice::Client.development
+      Venice::Client.stub(:production) { production_client_mock }
+      Venice::Client.stub(:development) { development_client_mock }
+
+      production_client_mock.stub(:json_response_from_verifying_data).
+        and_return({ 'status' => 21007 })
+
+      development_client_mock.stub(:json_response_from_verifying_data).
+        and_return(
+        'status' => 0,
+        'receipt' => {}
+      )
+
+      receipt = Venice::Receipt.verify!('asdf')
+      expect(receipt.environment).to eql :development
+    end
+  end
 end
