@@ -37,8 +37,12 @@ module Venice
     # Information about the status of the customer's auto-renewable subscriptions
     attr_reader :pending_renewal_info
 
-    def initialize(attributes: {}, original_json_response: {})
+    # AppStore environment from which the receipt was received
+    attr_reader :environment
+
+    def initialize(attributes: {}, environment: :production, original_json_response: {})
       @original_json_response = original_json_response
+      @environment = environment
 
       @bundle_id = attributes['bundle_id']
       @application_version = attributes['application_version']

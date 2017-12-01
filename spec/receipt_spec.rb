@@ -62,6 +62,7 @@ describe Venice::Receipt do
     its(:adam_id) { should eql 7654321 }
     its(:download_id) { should eql 1234567 }
     its(:requested_at) { should be_instance_of DateTime }
+    its(:environment) { should eq :production }
 
     describe '#verify!' do
       before do

@@ -29,6 +29,7 @@ module Venice
       when 0, 21006
         receipt = Receipt.new(
           attributes: json['receipt'],
+          environment: environment,
           original_json_response: json
         )
 
