@@ -32,7 +32,7 @@ module Venice
       @verification_url ||= ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
       @shared_secret = options[:shared_secret] if options[:shared_secret]
 
-      json = json_response_from_verifying_data(data)
+      json = json_response_from_verifying_data(data, options)
       receipt_attributes = json['receipt'].dup if json['receipt']
       receipt_attributes['original_json_response'] = json if receipt_attributes
 
@@ -60,7 +60,7 @@ module Venice
 
     private
 
-    def json_response_from_verifying_data(data)
+    def json_response_from_verifying_data(data, options = {})
       parameters = {
         'receipt-data' => data
       }
@@ -72,14 +72,27 @@ module Venice
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 
+      http.open_timeout = options[:open_timeout] if options[:open_timeout]
+      http.read_timeout = options[:read_timeout] if options[:read_timeout]
+
       request = Net::HTTP::Post.new(uri.request_uri)
       request['Accept'] = 'application/json'
       request['Content-Type'] = 'application/json'
       request.body = parameters.to_json
 
-      response = http.request(request)
+      begin
+        response = http.request(request)
+      rescue Timeout::Error
+        raise TimeoutError
+      end
 
       JSON.parse(response.body)
+    end
+  end
+
+  class Client::TimeoutError < Timeout::Error
+    def message
+      "The App Store timed out."
     end
   end
 end

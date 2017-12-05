@@ -94,7 +94,9 @@ module Venice
 
     class << self
       def verify(data, options = {})
-        verify!(data, options) rescue false
+        verify!(data, options)
+      rescue VerificationError, Client::TimeoutError
+        false
       end
 
       def verify!(data, options = {})
