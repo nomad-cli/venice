@@ -9,6 +9,7 @@ module Venice
   class Client
     attr_accessor :verification_url
     attr_writer :shared_secret
+    attr_writer :exclude_old_transactions
 
     class << self
       def development
@@ -31,6 +32,7 @@ module Venice
     def verify!(data, options = {})
       @verification_url ||= ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
       @shared_secret = options[:shared_secret] if options[:shared_secret]
+      @exclude_old_transactions = options[:exclude_old_transactions] if options[:exclude_old_transactions]
 
       json = json_response_from_verifying_data(data, options)
       receipt_attributes = json['receipt'].dup if json['receipt']
@@ -66,6 +68,7 @@ module Venice
       }
 
       parameters['password'] = @shared_secret if @shared_secret
+      parameters['exclude-old-transactions'] = @exclude_old_transactions if @exclude_old_transactions
 
       uri = URI(@verification_url)
       http = Net::HTTP.new(uri.host, uri.port)
