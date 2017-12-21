@@ -56,7 +56,7 @@ module Venice
 
         return receipt
       else
-        raise Receipt::VerificationError.new(json)
+        raise Receipt::VerificationError, json
       end
     end
 
@@ -95,7 +95,7 @@ module Venice
 
   class Client::TimeoutError < Timeout::Error
     def message
-      "The App Store timed out."
+      'The App Store timed out.'
     end
   end
 end

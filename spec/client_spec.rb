@@ -126,9 +126,9 @@ describe Venice::Client do
       end
 
       it 'raises a VerificationError' do
-        expect {
+        expect do
           client.verify!('asdf')
-        }.to raise_error(Venice::Receipt::VerificationError) do |error|
+        end.to raise_error(Venice::Receipt::VerificationError) do |error|
           expect(error.json).to eq(response)
           expect(error.code).to eq(21000)
           expect(error).not_to be_retryable
@@ -150,9 +150,9 @@ describe Venice::Client do
       end
 
       it 'raises a VerificationError' do
-        expect {
+        expect do
           client.verify!('asdf')
-        }.to raise_error(Venice::Receipt::VerificationError) do |error|
+        end.to raise_error(Venice::Receipt::VerificationError) do |error|
           expect(error).to be_retryable
         end
       end
