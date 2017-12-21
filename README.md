@@ -1,5 +1,7 @@
 ![Venice](https://raw.github.com/nomad/nomad.github.io/assets/venice-banner.png)
 
+[![Travis](https://img.shields.io/travis/nomad/venice.svg)](https://travis-ci.org/nomad/venice)
+
 Venice is a simple gem for verifying Apple In-App Purchase receipts, and retrieving the information associated with receipt data.
 
 There are two reasons why you should verify in-app purchase receipts on the server: First, it allows you to keep your own records of past purchases, which is useful for up-to-the-minute metrics and historical analysis. Second, server-side verification over SSL is the most reliable way to determine the authenticity of purchasing records.
