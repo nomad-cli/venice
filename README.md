@@ -71,6 +71,7 @@ Venice also comes with the `iap` binary, which provides a convenient way to veri
     | original_application_version   | 123                                |
     | original_purchase_date         | Fri, 07 Mar 2014 20:59:24 GMT      |
     | receipt_type                   | Production                         |
+    | receipt_created_at             | Mon, 23 Jun 2014 17:59:38 GMT      |
     | requested_at                   | Mon, 23 Jun 2014 17:59:38 GMT      |
     +--------------------------------+------------------------------------+
     | in_app                         | 1                                  |

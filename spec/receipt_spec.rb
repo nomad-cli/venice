@@ -12,6 +12,9 @@ describe Venice::Receipt do
           'bundle_id' => 'com.foo.bar',
           'application_version' => '2',
           'download_id' => 1234567,
+          'receipt_creation_date' => '2014-06-04 23:20:47 Etc/GMT',
+          'receipt_creation_date_ms' => '1401924047883',
+          'receipt_creation_date_pst' => '2014-06-04 16:20:47 America/Los_Angeles',
           'request_date' => '2014-06-04 23:20:47 Etc/GMT',
           'request_date_ms' => '1401924047883',
           'request_date_pst' => '2014-06-04 16:20:47 America/Los_Angeles',
@@ -61,6 +64,7 @@ describe Venice::Receipt do
     its(:original_purchase_date) { should be_instance_of DateTime }
     its(:expires_at) { should be_instance_of DateTime }
     its(:receipt_type) { 'Production' }
+    its(:receipt_created_at) { should be_instance_of DateTime }
     its(:adam_id) { 7654321 }
     its(:download_id) { 1234567 }
     its(:requested_at) { should be_instance_of DateTime }

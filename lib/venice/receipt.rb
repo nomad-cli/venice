@@ -28,6 +28,7 @@ module Venice
     attr_reader :adam_id
     attr_reader :download_id
     attr_reader :requested_at
+    attr_reader :receipt_created_at
 
     # Original json response from AppStore
     attr_reader :original_json_response
@@ -54,6 +55,7 @@ module Venice
       @adam_id = attributes['adam_id']
       @download_id = attributes['download_id']
       @requested_at = DateTime.parse(attributes['request_date']) if attributes['request_date']
+      @receipt_created_at = DateTime.parse(attributes['receipt_creation_date']) if attributes['receipt_creation_date']
 
       @in_app = []
       if attributes['in_app']
@@ -81,6 +83,7 @@ module Venice
         adam_id: @adam_id,
         download_id: @download_id,
         requested_at: (@requested_at.httpdate rescue nil),
+        receipt_created_at: (@receipt_created_at.httpdate rescue nil),
         in_app: @in_app.map(&:to_h),
         pending_renewal_info: @pending_renewal_info.map(&:to_h),
         latest_receipt_info: @latest_receipt_info
