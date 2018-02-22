@@ -34,7 +34,7 @@ module Venice
       @auto_renew_product_id = attributes['auto_renew_product_id']
 
       if attributes['is_in_billing_retry_period']
-        @is_in_billing_retry_period = (attributes[is_in_billing_retry_period] == '1')
+        @is_in_billing_retry_period = (attributes['is_in_billing_retry_period'] == '1')
       end
 
       @product_id = attributes['product_id']
