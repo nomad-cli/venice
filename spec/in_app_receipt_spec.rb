@@ -40,6 +40,12 @@ describe Venice::InAppReceipt do
       subject.original.transaction_id.should == '140xxx867509'
       subject.original.purchased_at.should be_instance_of DateTime
     end
+    
+    it "should parse expires_date when expires_date_ms is missing and expires_date is the ms epoch" do
+      attributes.delete('expires_date_ms')
+      attributes['expires_date'] = '1403941685000'
+      in_app_receipt.expires_at.should eq Time.at(1403941685000 / 1000)
+    end
 
     it 'should output a hash with attributes' do
       in_app_receipt.to_h.should include(quantity: 1,

@@ -73,10 +73,6 @@ describe Venice::Client do
     end
 
     context 'with a latest receipt info attribute' do
-      before do
-        client.stub(:json_response_from_verifying_data).and_return(response)
-      end
-
       let(:response) do
         {
           'status' => 0,
@@ -108,8 +104,20 @@ describe Venice::Client do
       end
 
       it 'should create a latest receipt' do
+        client.stub(:json_response_from_verifying_data).and_return(response)
         receipt = client.verify! 'asdf'
         receipt.latest_receipt_info.should_not be_nil
+        receipt.latest_receipt_info.first.product_id.should eq 'com.ficklebits.nsscreencast.monthly_sub'
+      end
+      
+      context 'when latest_receipt_info is a hash instead of an array' do
+        it 'should still create a latest receipt' do
+          response['latest_receipt_info'] = response['latest_receipt_info'].first
+          client.stub(:json_response_from_verifying_data).and_return(response)
+          receipt = client.verify! 'asdf'
+          receipt.latest_receipt_info.should_not be_nil
+          receipt.latest_receipt_info.first.product_id.should eq 'com.ficklebits.nsscreencast.monthly_sub'
+        end
       end
     end
 
