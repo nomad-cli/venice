@@ -18,6 +18,10 @@ module Venice
     # to the transaction’s transactionIdentifier property.
     attr_reader :transaction_id
 
+    # The primary key for identifying subscription purchases. This value is a unique ID that identifies purchase events across devices, including subscription renewal purchase events.
+    # When restoring purchase, transaction_id could change
+    attr_reader :web_order_line_item_id
+
     # The date and time this transaction occurred. This value corresponds to the
     # transaction’s transactionDate property.
     attr_reader :purchased_at
@@ -46,6 +50,7 @@ module Venice
       @quantity = Integer(attributes['quantity']) if attributes['quantity']
       @product_id = attributes['product_id']
       @transaction_id = attributes['transaction_id']
+      @web_order_line_item_id = attributes['web_order_line_item_id']
       @purchased_at = DateTime.parse(attributes['purchase_date']) if attributes['purchase_date']
       @app_item_id = attributes['app_item_id']
       @version_external_identifier = attributes['version_external_identifier']
@@ -71,6 +76,7 @@ module Venice
         quantity: @quantity,
         product_id: @product_id,
         transaction_id: @transaction_id,
+        web_order_line_item_id: @web_order_line_item_id,
         purchase_date: (@purchased_at.httpdate rescue nil),
         original_transaction_id: (@original.transaction_id rescue nil),
         original_purchase_date: (@original.purchased_at.httpdate rescue nil),

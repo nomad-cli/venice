@@ -29,6 +29,7 @@ describe Venice::Receipt do
               'product_id' => 'com.foo.product1',
               'transaction_id' => '1000000070107111',
               'original_transaction_id' => '1000000061051111',
+              'web_order_line_item_id' => '1000000026812043',
               'purchase_date' => '2014-05-28 14:47:53 Etc/GMT',
               'purchase_date_ms' => '1401288473000',
               'purchase_date_pst' => '2014-05-28 07:47:53 America/Los_Angeles',

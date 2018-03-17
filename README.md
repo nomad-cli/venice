@@ -84,6 +84,7 @@ Venice also comes with the `iap` binary, which provides a convenient way to veri
     |  - purchase_date               |                                    |
     |  - quantity                    | 1                                  |
     |  - transaction_id              | 1000000000000001                   |
+    |  - web_order_line_item_id      | 1000000000000001                   |
     |  - version_external_identifier |                                    |
     +--------------------------------+------------------------------------+
 
