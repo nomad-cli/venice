@@ -51,7 +51,11 @@ module Venice
       @version_external_identifier = attributes['version_external_identifier']
 
       # expires_date is in ms since the Epoch, Time.at expects seconds
-      @expires_at = Time.at(attributes['expires_date_ms'].to_i / 1000) if attributes['expires_date_ms']
+      if attributes['expires_date_ms']
+        @expires_at = Time.at(attributes['expires_date_ms'].to_i / 1000) 
+      elsif attributes['expires_date'] && is_number?(attributes['expires_date'])
+        @expires_at = Time.at(attributes['expires_date'].to_i / 1000)
+      end
 
       # cancellation_date is in ms since the Epoch, Time.at expects seconds
       @cancellation_at = Time.at(attributes['cancellation_date_ms'].to_i / 1000) if attributes['cancellation_date_ms']
@@ -84,6 +88,12 @@ module Venice
 
     def to_json
       to_hash.to_json
+    end
+    
+    private
+    
+    def is_number?(string)
+      !!(string && string.to_s =~ /^[0-9]+$/)
     end
   end
 end
