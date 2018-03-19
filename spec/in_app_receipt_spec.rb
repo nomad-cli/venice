@@ -7,6 +7,7 @@ describe Venice::InAppReceipt do
         'quantity' => 1,
         'product_id' => 'com.foo.product1',
         'transaction_id' => '1000000070107235',
+        'web_order_line_item_id' => '1000000026812043',
         'purchase_date' => '2014-05-28 14:47:53 Etc/GMT',
         'purchase_date_ms' => '1401288473000',
         'purchase_date_pst' => '2014-05-28 07:47:53 America/Los_Angeles',
@@ -29,6 +30,7 @@ describe Venice::InAppReceipt do
     its(:quantity) { 1 }
     its(:product_id) { 'com.foo.product1' }
     its(:transaction_id) { '1000000070107235' }
+    its(:web_order_line_item_id) { '1000000026812043' }
     its(:purchased_at) { should be_instance_of DateTime }
     its(:app_item_id) { 'com.foo.app1' }
     its(:version_external_identifier) { '123' }
@@ -51,6 +53,7 @@ describe Venice::InAppReceipt do
       in_app_receipt.to_h.should include(quantity: 1,
                                          product_id: 'com.foo.product1',
                                          transaction_id: '1000000070107235',
+                                         web_order_line_item_id: '1000000026812043',
                                          purchase_date: 'Wed, 28 May 2014 14:47:53 GMT',
                                          original_purchase_date: 'Wed, 28 May 2014 14:47:53 GMT')
     end
