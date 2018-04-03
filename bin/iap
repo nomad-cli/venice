@@ -2,13 +2,11 @@
 
 require 'venice'
 
-
 require 'commander/import'
 require 'terminal-table'
 
-
 HighLine.track_eof = false # Fix for built-in Ruby
-Signal.trap("INT") {} # Suppress backtrace when exiting command
+Signal.trap('INT') {} # Suppress backtrace when exiting command
 
 program :version, Venice::VERSION
 program :description, 'A command-line interface for verifying Apple In-App Purchase receipts'
@@ -29,8 +27,8 @@ command :verify do |c|
   c.example 'description', 'iap verify /path/to/receipt [--secret shared_secret]'
 
   c.action do |args, options|
-    say_error "Missing receipt argument" and abort unless file = args.first
-    say_error "Receipt file does not exist" unless File.exist?(file)
+    say_error('Missing receipt argument') and abort unless file = args.first
+    say_error 'Receipt file does not exist' unless File.exist?(file)
 
     client = options.sandbox ? Venice::Client.development : Venice::Client.production
     client.shared_secret = options.secret if options.secret
@@ -38,7 +36,7 @@ command :verify do |c|
     begin
       receipt = client.verify!(File.read(file))
 
-      table = Terminal::Table.new :title => "Receipt" do |t|
+      table = Terminal::Table.new title: 'Receipt' do |t|
         hash = receipt.to_h
         hash.keys.sort.each do |key|
           next if key == :in_app
@@ -59,9 +57,8 @@ command :verify do |c|
       end
 
       puts table
-
-    rescue => error
-      say_error error.message and abort
+    rescue StandardError => error
+      say_error(error.message) and abort
     end
   end
 end
