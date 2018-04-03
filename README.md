@@ -22,7 +22,7 @@ See Apple's [Receipt Validation Programming Guide](https://developer.apple.com/l
 ```ruby
 require 'venice'
 
-data = "(Base64-Encoded Receipt Data)"
+data = '(Base64-Encoded Receipt Data)'
 if receipt = Venice::Receipt.verify(data)
   p receipt.to_h
 
@@ -39,12 +39,11 @@ end
 ```ruby
 require 'venice'
 
-data = "(Base64-Encoded Receipt Data)"
+data = '(Base64-Encoded Receipt Data)'
 
 # You must pass shared secret when verification on Auto-Renewable
-opts = {
-  shared_secret: 'your key'
-}
+opts = { shared_secret: 'your key' }
+
 if receipt = Venice::Receipt.verify(data, opts)
   # Renewed receipts are added into `latest_receipt_info` array.
   p receipt.latest_receipt_info.map(&:expires_at)
