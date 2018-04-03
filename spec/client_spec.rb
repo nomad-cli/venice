@@ -153,7 +153,7 @@ describe Venice::Client do
         {
           'status' => 21000,
           'receipt' => {},
-          'is-retryable' => true
+          'is_retryable' => true
         }
       end
 
