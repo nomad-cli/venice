@@ -137,7 +137,7 @@ module Venice
       end
 
       def retryable?
-        json['is-retryable']
+        json['is_retryable']
       end
 
       def message
