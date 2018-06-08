@@ -87,7 +87,7 @@ module Venice
         original_purchase_date: (@original.purchased_at.httpdate rescue nil),
         app_item_id: @app_item_id,
         version_external_identifier: @version_external_identifier,
-        is_trial_period: @is_traial_period,
+        is_trial_period: @is_trial_period,
         expires_at: (@expires_at.httpdate rescue nil),
         cancellation_at: (@cancellation_at.httpdate rescue nil)
       }
