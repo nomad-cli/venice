@@ -54,7 +54,7 @@ module Venice
       @purchased_at = DateTime.parse(attributes['purchase_date']) if attributes['purchase_date']
       @app_item_id = attributes['app_item_id']
       @version_external_identifier = attributes['version_external_identifier']
-      @is_traial_period = to_bool(attributes['is_trial_period'])
+      @is_trial_period = to_bool(attributes['is_trial_period'])
 
       # expires_date is in ms since the Epoch, Time.at expects seconds
       if attributes['expires_date_ms']
