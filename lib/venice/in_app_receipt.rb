@@ -54,11 +54,11 @@ module Venice
       @purchased_at = DateTime.parse(attributes['purchase_date']) if attributes['purchase_date']
       @app_item_id = attributes['app_item_id']
       @version_external_identifier = attributes['version_external_identifier']
-      @is_trial_period = to_bool(attributes['is_trial_period'])
+      @is_trial_period = attributes['is_trial_period'].to_s == 'true'
 
       # expires_date is in ms since the Epoch, Time.at expects seconds
       if attributes['expires_date_ms']
-        @expires_at = Time.at(attributes['expires_date_ms'].to_i / 1000) 
+        @expires_at = Time.at(attributes['expires_date_ms'].to_i / 1000)
       elsif attributes['expires_date'] && is_number?(attributes['expires_date'])
         @expires_at = Time.at(attributes['expires_date'].to_i / 1000)
       end
@@ -97,16 +97,11 @@ module Venice
     def to_json
       to_hash.to_json
     end
-    
+
     private
-    
+
     def is_number?(string)
       !!(string && string.to_s =~ /^[0-9]+$/)
-    end
-
-    def to_bool(string)
-      return string if string.is_a?(TrueClass) || string.is_a?(FalseClass)
-      {'true' => true, 'false' => false }[string]
     end
   end
 end
