@@ -1,6 +1,5 @@
-# -*- encoding: utf-8 -*-
-$:.push File.expand_path("../lib", __FILE__)
-require "venice/version"
+$LOAD_PATH.push File.expand_path('lib', __dir__)
+require 'venice/version'
 
 Gem::Specification.new do |s|
   s.name        = 'venice'
