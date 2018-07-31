@@ -23,6 +23,7 @@ describe Venice::PendingRenewalInfo do
       expect(subject.auto_renew_product_id).to eql('com.foo.product1')
       expect(subject.is_in_billing_retry_period).to eql(false)
       expect(subject.product_id).to eql('com.foo.product1')
+      expect(subject.original_json_data).to eql(attributes)
     end
 
     it 'outputs attributes in hash' do

@@ -37,6 +37,7 @@ describe Venice::InAppReceipt do
     its(:is_trial_period) { false }
     its(:original) { should be_instance_of Venice::InAppReceipt }
     its(:expires_at) { should be_instance_of Time }
+    its(:original_json_data) { attributes }
 
     it "should parse the 'original' attributes" do
       subject.original.should be_instance_of Venice::InAppReceipt

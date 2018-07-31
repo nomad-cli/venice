@@ -5,6 +5,9 @@ module Venice
     # For detailed explanations on these keys/values, see
     # https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW12
 
+    # Original JSON data returned from Apple for an InAppReceipt object.
+    attr_reader :original_json_data
+
     # The number of items purchased. This value corresponds to the quantity property of
     # the SKPayment object stored in the transaction’s payment property.
     attr_reader :quantity
@@ -47,6 +50,7 @@ module Venice
     attr_reader :cancellation_at
 
     def initialize(attributes = {})
+      @original_json_data = attributes
       @quantity = Integer(attributes['quantity']) if attributes['quantity']
       @product_id = attributes['product_id']
       @transaction_id = attributes['transaction_id']
