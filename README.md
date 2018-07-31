@@ -86,6 +86,7 @@ Venice also comes with the `iap` binary, which provides a convenient way to veri
     |  - web_order_line_item_id      | 1000000000000001                   |
     |  - version_external_identifier |                                    |
     |  - is_trial_period             | true                               |
+    |  - is_in_intro_offer_period    | true                               |
     +--------------------------------+------------------------------------+
 
 
