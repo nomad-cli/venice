@@ -46,6 +46,10 @@ module Venice
     # For a transaction that was canceled by Apple customer support, the time and date of the cancellation.
     attr_reader :cancellation_at
 
+    # Only present for auto-renewable subscription receipts. Value is true if the customer’s subscription is
+    # currently in an introductory price period, false if not, nil if key is not present on receipt.
+    attr_reader :is_in_intro_offer_period
+
     def initialize(attributes = {})
       @quantity = Integer(attributes['quantity']) if attributes['quantity']
       @product_id = attributes['product_id']
@@ -55,6 +59,7 @@ module Venice
       @app_item_id = attributes['app_item_id']
       @version_external_identifier = attributes['version_external_identifier']
       @is_trial_period = attributes['is_trial_period'].to_s == 'true'
+      @is_in_intro_offer_period = attributes['is_in_intro_offer_period'] == 'true' if attributes['is_in_intro_offer_period']
 
       # expires_date is in ms since the Epoch, Time.at expects seconds
       if attributes['expires_date_ms']
@@ -88,6 +93,7 @@ module Venice
         app_item_id: @app_item_id,
         version_external_identifier: @version_external_identifier,
         is_trial_period: @is_trial_period,
+        is_in_intro_offer_period: @is_in_intro_offer_period,
         expires_at: (@expires_at.httpdate rescue nil),
         cancellation_at: (@cancellation_at.httpdate rescue nil)
       }

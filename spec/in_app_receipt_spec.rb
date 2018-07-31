@@ -16,6 +16,7 @@ describe Venice::InAppReceipt do
         'original_purchase_date_ms' => '1401288473000',
         'original_purchase_date_pst' => '2014-05-28 07:47:53 America/Los_Angeles',
         'is_trial_period' => 'false',
+        'is_in_intro_offer_period' => 'true',
         'version_external_identifier' => '123',
         'app_item_id' => 'com.foo.app1',
         'expires_date' => '2014-06-28 07:47:53 America/Los_Angeles',
@@ -35,6 +36,7 @@ describe Venice::InAppReceipt do
     its(:app_item_id) { 'com.foo.app1' }
     its(:version_external_identifier) { '123' }
     its(:is_trial_period) { false }
+    its(:is_in_intro_offer_period) { true }
     its(:original) { should be_instance_of Venice::InAppReceipt }
     its(:expires_at) { should be_instance_of Time }
 
@@ -56,6 +58,7 @@ describe Venice::InAppReceipt do
                                          transaction_id: '1000000070107235',
                                          web_order_line_item_id: '1000000026812043',
                                          is_trial_period: false,
+                                         is_in_intro_offer_period: true,
                                          purchase_date: 'Wed, 28 May 2014 14:47:53 GMT',
                                          original_purchase_date: 'Wed, 28 May 2014 14:47:53 GMT')
     end
