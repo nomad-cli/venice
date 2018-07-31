@@ -1,5 +1,8 @@
 module Venice
   class PendingRenewalInfo
+    # Original JSON data returned from Apple for a PendingRenewalInfo object.
+    attr_reader :original_json_data
+
     # For an expired subscription, the reason for the subscription expiration.
     # This key is only present for a receipt containing an expired auto-renewable subscription.
     attr_reader :expiration_intent
@@ -29,6 +32,7 @@ module Venice
     attr_reader :cancellation_reason
 
     def initialize(attributes)
+      @original_json_data = attributes
       @expiration_intent = Integer(attributes['expiration_intent']) if attributes['expiration_intent']
       @auto_renew_status = Integer(attributes['auto_renew_status']) if attributes['auto_renew_status']
       @auto_renew_product_id = attributes['auto_renew_product_id']
