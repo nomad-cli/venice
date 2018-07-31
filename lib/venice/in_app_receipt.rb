@@ -44,7 +44,12 @@ module Venice
     attr_reader :expires_at
 
     # For a transaction that was canceled by Apple customer support, the time and date of the cancellation.
+    # For an auto-renewable subscription plan that was upgraded, the time and date of the upgrade transaction.
     attr_reader :cancellation_at
+
+    # Only present for auto-renewable subscription receipts. Value is true if the customer’s subscription is
+    # currently in the free trial period, false if not, nil if key is not present on receipt.
+    attr_reader :is_trial_period
 
     def initialize(attributes = {})
       @quantity = Integer(attributes['quantity']) if attributes['quantity']
@@ -54,7 +59,7 @@ module Venice
       @purchased_at = DateTime.parse(attributes['purchase_date']) if attributes['purchase_date']
       @app_item_id = attributes['app_item_id']
       @version_external_identifier = attributes['version_external_identifier']
-      @is_trial_period = attributes['is_trial_period'].to_s == 'true'
+      @is_trial_period = attributes['is_trial_period'].to_s == 'true' if attributes['is_trial_period']
 
       # expires_date is in ms since the Epoch, Time.at expects seconds
       if attributes['expires_date_ms']
