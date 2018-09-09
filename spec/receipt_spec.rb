@@ -81,6 +81,54 @@ describe Venice::Receipt do
         expect(subject).to be_an_instance_of(Venice::Receipt)
       end
 
+      describe 'retrying' do
+        let(:retryable_error_response) do
+          {
+            'status' => 21000,
+            'receipt' => {},
+            'is_retryable' => true
+          }
+        end
+
+        let(:error_response) do
+          {
+            'status' => 21000,
+            'receipt' => {},
+            'is_retryable' => false
+          }
+        end
+
+        context 'with a retryable error response' do
+          before do
+            Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(retryable_error_response, response)
+          end
+
+          it 'creates the receipt' do
+            expect(subject).to be_an_instance_of(Venice::Receipt)
+          end
+        end
+
+        context 'with 4 retryable error responses' do
+          before do
+            Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(
+              retryable_error_response,
+              retryable_error_response,
+              retryable_error_response,
+              retryable_error_response,
+              response
+            )
+          end
+
+          it { expect { subject }.to raise_error(Venice::Receipt::VerificationError) }
+        end
+
+        context 'with a not retryable error response' do
+          before do
+            Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(error_response, response)
+          end
+
+          it { expect { subject }.to raise_error(Venice::Receipt::VerificationError) }
+        end
       end
     end
 
