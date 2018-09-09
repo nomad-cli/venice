@@ -70,15 +70,17 @@ describe Venice::Receipt do
     its(:download_id) { 1234567 }
     its(:requested_at) { should be_instance_of DateTime }
 
-    describe '#verify!' do
+    describe '.verify!' do
+      subject { described_class.verify!('asdf') }
+
       before do
         Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(response)
       end
 
-      let(:receipt) { Venice::Receipt.verify('asdf') }
+      it 'creates the receipt' do
+        expect(subject).to be_an_instance_of(Venice::Receipt)
+      end
 
-      it 'should create the receipt' do
-        receipt.should_not be_nil
       end
     end
 
