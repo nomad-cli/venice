@@ -70,15 +70,65 @@ describe Venice::Receipt do
     its(:download_id) { 1234567 }
     its(:requested_at) { should be_instance_of DateTime }
 
-    describe '#verify!' do
+    describe '.verify!' do
+      subject { described_class.verify!('asdf') }
+
       before do
         Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(response)
       end
 
-      let(:receipt) { Venice::Receipt.verify('asdf') }
+      it 'creates the receipt' do
+        expect(subject).to be_an_instance_of(Venice::Receipt)
+      end
 
-      it 'should create the receipt' do
-        receipt.should_not be_nil
+      describe 'retrying' do
+        let(:retryable_error_response) do
+          {
+            'status' => 21000,
+            'receipt' => {},
+            'is_retryable' => true
+          }
+        end
+
+        let(:error_response) do
+          {
+            'status' => 21000,
+            'receipt' => {},
+            'is_retryable' => false
+          }
+        end
+
+        context 'with a retryable error response' do
+          before do
+            Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(retryable_error_response, response)
+          end
+
+          it 'creates the receipt' do
+            expect(subject).to be_an_instance_of(Venice::Receipt)
+          end
+        end
+
+        context 'with 4 retryable error responses' do
+          before do
+            Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(
+              retryable_error_response,
+              retryable_error_response,
+              retryable_error_response,
+              retryable_error_response,
+              response
+            )
+          end
+
+          it { expect { subject }.to raise_error(Venice::Receipt::VerificationError) }
+        end
+
+        context 'with a not retryable error response' do
+          before do
+            Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(error_response, response)
+          end
+
+          it { expect { subject }.to raise_error(Venice::Receipt::VerificationError) }
+        end
       end
     end
 

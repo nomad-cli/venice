@@ -2,6 +2,8 @@ require 'time'
 
 module Venice
   class Receipt
+    MAX_RE_VERIFY_COUNT = 3
+
     # For detailed explanations on these keys/values, see
     # https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW1
 
@@ -105,6 +107,7 @@ module Venice
       def verify!(data, options = {})
         client = Client.production
 
+        retry_count = 0
         begin
           client.verify!(data, options)
         rescue VerificationError => error
@@ -116,6 +119,11 @@ module Venice
             client = Client.production
             retry
           else
+            retry_count += 1
+            if error.retryable? && retry_count <= MAX_RE_VERIFY_COUNT
+              retry
+            end
+
             raise error
           end
         end
