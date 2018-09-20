@@ -81,7 +81,7 @@ describe Venice::Receipt do
         expect(subject).to be_an_instance_of(Venice::Receipt)
       end
 
-      describe 'retrying' do
+      describe 'retrying VerificationError' do
         let(:retryable_error_response) do
           {
             'status' => 21000,
@@ -128,6 +128,52 @@ describe Venice::Receipt do
           end
 
           it { expect { subject }.to raise_error(Venice::Receipt::VerificationError) }
+        end
+      end
+
+      describe 'retrying http error' do
+        def stub_json_response_from_verifying_data(returns)
+          counter = 0
+          Venice::Client.any_instance.stub(:json_response_from_verifying_data) do
+            begin
+              returns[counter].call
+            ensure
+              counter += 1
+            end
+          end
+        end
+
+        context 'given 3 http errors' do
+          before do
+            returns = [
+              -> { raise(Net::ReadTimeout) },
+              -> { raise(OpenSSL::SSL::SSLError) },
+              -> { raise(Errno::ECONNRESET) },
+              -> { response }
+            ]
+            stub_json_response_from_verifying_data(returns)
+          end
+
+          it 'creates the receipt' do
+            expect(subject).to be_an_instance_of(Venice::Receipt)
+          end
+        end
+
+        context 'given 4 Net::ReadTimeout' do
+          before do
+            returns = [
+              -> { raise(Net::ReadTimeout) },
+              -> { raise(Net::ReadTimeout) },
+              -> { raise(Net::ReadTimeout) },
+              -> { raise(Net::ReadTimeout) },
+              -> { response }
+            ]
+            stub_json_response_from_verifying_data(returns)
+          end
+
+          it 'raises http error' do
+            expect { subject }.to raise_error(Net::ReadTimeout)
+          end
         end
       end
     end
