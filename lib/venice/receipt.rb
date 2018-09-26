@@ -126,6 +126,13 @@ module Venice
 
             raise error
           end
+        rescue Net::ReadTimeout, Timeout::Error, OpenSSL::SSL::SSLError,
+               Errno::ECONNRESET, Errno::ECONNABORTED, Errno::EPIPE
+          # verifyReceipt is idempotent so we can retry it.
+          # Net::Http has retry logic for some idempotent http methods but it verifyReceipt is POST.
+          retry_count += 1
+          retry if retry_count <= MAX_RE_VERIFY_COUNT
+          raise
         end
       end
 
