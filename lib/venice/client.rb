@@ -95,13 +95,23 @@ module Venice
         raise TimeoutError
       end
 
-      JSON.parse(response.body)
+      begin
+        JSON.parse(response.body)
+      rescue JSON::ParserError
+        raise InvalidResponseError
+      end
     end
   end
 
   class Client::TimeoutError < Timeout::Error
     def message
       'The App Store timed out.'
+    end
+  end
+
+  class Client::InvalidResponseError < StandardError
+    def message
+      'The App Store returned invalid response'
     end
   end
 end
