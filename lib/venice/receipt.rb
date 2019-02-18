@@ -31,6 +31,7 @@ module Venice
     attr_reader :download_id
     attr_reader :requested_at
     attr_reader :receipt_created_at
+    attr_reader :expiration_intent
 
     # Original json response from AppStore
     attr_reader :original_json_response
@@ -58,6 +59,7 @@ module Venice
       @download_id = attributes['download_id']
       @requested_at = DateTime.parse(attributes['request_date']) if attributes['request_date']
       @receipt_created_at = DateTime.parse(attributes['receipt_creation_date']) if attributes['receipt_creation_date']
+      @expiration_intent = Integer(original_json_response['expiration_intent']) if original_json_response['expiration_intent']
 
       @in_app = []
       if attributes['in_app']
