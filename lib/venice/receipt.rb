@@ -83,6 +83,7 @@ module Venice
 
     def to_hash
       {
+        env_name: @env_name,
         bundle_id: @bundle_id,
         application_version: @application_version,
         original_application_version: @original_application_version,
