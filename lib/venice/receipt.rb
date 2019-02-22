@@ -41,9 +41,13 @@ module Venice
     # Information about the status of the customer's auto-renewable subscriptions
     attr_reader :pending_renewal_info
 
+    # The environment on which the receipt has verified against
+    attr_reader :env_name
+
     def initialize(attributes = {})
       @original_json_response = attributes['original_json_response']
 
+      @env_name = attributes['env_name']
       @bundle_id = attributes['bundle_id']
       @application_version = attributes['application_version']
       @original_application_version = attributes['original_application_version']
@@ -59,7 +63,8 @@ module Venice
       @download_id = attributes['download_id']
       @requested_at = DateTime.parse(attributes['request_date']) if attributes['request_date']
       @receipt_created_at = DateTime.parse(attributes['receipt_creation_date']) if attributes['receipt_creation_date']
-      @expiration_intent = Integer(original_json_response['expiration_intent']) if original_json_response['expiration_intent']
+
+      @expiration_intent = Integer(original_json_response['expiration_intent']) if original_json_response && original_json_response['expiration_intent']
 
       @in_app = []
       if attributes['in_app']

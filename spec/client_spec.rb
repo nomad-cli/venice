@@ -106,6 +106,7 @@ describe Venice::Client do
       it 'should create a latest receipt' do
         client.stub(:json_response_from_verifying_data).and_return(response)
         receipt = client.verify! 'asdf'
+        receipt.env_name.should eq 'development'
         receipt.latest_receipt_info.should_not be_nil
         receipt.latest_receipt_info.first.product_id.should eq 'com.ficklebits.nsscreencast.monthly_sub'
       end
