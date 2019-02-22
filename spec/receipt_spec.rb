@@ -68,6 +68,10 @@ describe Venice::Receipt do
           end
 
           its(:env_name) { is_expected.to eq 'production' }
+
+          its(:production?) { is_expected.to be true }
+
+          its(:development?) { is_expected.to be false }
         end
 
         context 'with 4 retryable error responses' do
@@ -122,6 +126,10 @@ describe Venice::Receipt do
           end
 
           its(:env_name) { is_expected.to eq 'development' }
+
+          its(:production?) { is_expected.to be false }
+
+          its(:development?) { is_expected.to be true }
         end
       end
 

@@ -4,6 +4,11 @@ module Venice
   class Receipt
     MAX_RE_VERIFY_COUNT = 3
 
+    module EnvName
+      DEVELOPMENT = 'development'
+      PRODUCTION = 'production'
+    end
+
     # For detailed explanations on these keys/values, see
     # https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW1
 
@@ -79,6 +84,14 @@ module Venice
           @pending_renewal_info << PendingRenewalInfo.new(pending_renewal_attributes)
         end
       end
+    end
+
+    def development?
+      env_name == Venice::Receipt::EnvName::DEVELOPMENT
+    end
+
+    def production?
+      env_name == Venice::Receipt::EnvName::PRODUCTION
     end
 
     def to_hash

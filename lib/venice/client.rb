@@ -6,9 +6,6 @@ module Venice
   ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT = 'https://buy.itunes.apple.com/verifyReceipt'
   ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'
 
-  ITUNES_PRODUCTION_ENVIRONMENT = 'production'
-  ITUNES_DEVELOPMENT_ENVIRONMENT = 'development'
-
   class Client
     attr_accessor :verification_url, :env_name
     attr_writer :shared_secret
@@ -18,14 +15,14 @@ module Venice
       def development
         client = new
         client.verification_url = ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
-        client.env_name = ITUNES_DEVELOPMENT_ENVIRONMENT
+        client.env_name = Venice::Receipt::EnvName::DEVELOPMENT
         client
       end
 
       def production
         client = new
         client.verification_url = ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT
-        client.env_name = ITUNES_PRODUCTION_ENVIRONMENT
+        client.env_name = Venice::Receipt::EnvName::PRODUCTION
         client
       end
     end
@@ -37,7 +34,7 @@ module Venice
 
     def verify!(data, options = {})
       @verification_url ||= ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
-      @env_name ||= ITUNES_DEVELOPMENT_ENVIRONMENT
+      @env_name ||= Venice::Receipt::EnvName::DEVELOPMENT
       @shared_secret = options[:shared_secret] if options[:shared_secret]
       @exclude_old_transactions = options[:exclude_old_transactions] if options[:exclude_old_transactions]
 
