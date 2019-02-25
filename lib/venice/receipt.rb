@@ -49,10 +49,11 @@ module Venice
     # The environment on which the receipt has verified against
     attr_reader :env_name
 
-    def initialize(attributes = {})
-      @original_json_response = attributes['original_json_response']
+    def initialize(original_json_response = {})
+      attributes = original_json_response['receipt']
 
-      @env_name = attributes['env_name']
+      @original_json_response = original_json_response
+      @env_name = original_json_response['env_name']
       @bundle_id = attributes['bundle_id']
       @application_version = attributes['application_version']
       @original_application_version = attributes['original_application_version']
@@ -82,6 +83,24 @@ module Venice
       if original_json_response && original_json_response['pending_renewal_info']
         original_json_response['pending_renewal_info'].each do |pending_renewal_attributes|
           @pending_renewal_info << PendingRenewalInfo.new(pending_renewal_attributes)
+        end
+      end
+
+      # From Apple docs:
+      # > Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
+      # > The JSON representation of the receipt for the most recent renewal
+      if latest_receipt_info_attributes = original_json_response['latest_receipt_info']
+        latest_receipt_info_attributes = [latest_receipt_info_attributes] if latest_receipt_info_attributes.is_a?(Hash)
+
+        # AppStore returns 'latest_receipt_info' even if we use over iOS 6. Besides, its format is an Array.
+        if latest_receipt_info_attributes.is_a?(Array)
+          @latest_receipt_info = []
+          latest_receipt_info_attributes.each do |latest_receipt_info_attribute|
+            # latest_receipt_info format is identical with in_app
+            @latest_receipt_info << InAppReceipt.new(latest_receipt_info_attribute)
+          end
+        else
+          @latest_receipt_info = latest_receipt_info_attributes
         end
       end
     end

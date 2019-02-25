@@ -4,7 +4,7 @@ describe Venice::Receipt do
   describe 'parsing the response' do
     let(:response) { JSON.parse(File.read('./spec/fixtures/receipt_not_expired_cancelled.json')) }
 
-    subject { Venice::Receipt.new(response['receipt']) }
+    subject { Venice::Receipt.new(response) }
 
     its(:bundle_id) { 'com.foo.bar' }
     its(:application_version) { '2' }

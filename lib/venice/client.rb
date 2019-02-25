@@ -39,36 +39,11 @@ module Venice
       @exclude_old_transactions = options[:exclude_old_transactions] if options[:exclude_old_transactions]
 
       json = json_response_from_verifying_data(data, options)
-      receipt_attributes = json['receipt'].dup if json['receipt']
-
-      if receipt_attributes
-        receipt_attributes['original_json_response'] = json
-        receipt_attributes['env_name'] = env_name
-      end
+      json['env_name'] = env_name if json
 
       case json['status'].to_i
       when 0, 21006
-        receipt = Receipt.new(receipt_attributes)
-
-        # From Apple docs:
-        # > Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
-        # > The JSON representation of the receipt for the most recent renewal
-        if latest_receipt_info_attributes = json['latest_receipt_info']
-          latest_receipt_info_attributes = [latest_receipt_info_attributes] if latest_receipt_info_attributes.is_a?(Hash)
-
-          # AppStore returns 'latest_receipt_info' even if we use over iOS 6. Besides, its format is an Array.
-          if latest_receipt_info_attributes.is_a?(Array)
-            receipt.latest_receipt_info = []
-            latest_receipt_info_attributes.each do |latest_receipt_info_attribute|
-              # latest_receipt_info format is identical with in_app
-              receipt.latest_receipt_info << InAppReceipt.new(latest_receipt_info_attribute)
-            end
-          else
-            receipt.latest_receipt_info = latest_receipt_info_attributes
-          end
-        end
-
-        return receipt
+        Receipt.new(json)
       else
         raise Receipt::VerificationError, json
       end
