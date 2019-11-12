@@ -29,12 +29,12 @@ describe Venice::Receipt do
       subject { described_class.verify!('asdf') }
 
       before do
-        Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(response)
+        allow_any_instance_of(Venice::Client).to receive(:json_response_from_verifying_data).and_return(response)
       end
 
       def stub_json_response_from_verifying_data(returns)
         counter = 0
-        Venice::Client.any_instance.stub(:json_response_from_verifying_data) do
+        allow_any_instance_of(Venice::Client).to receive(:json_response_from_verifying_data) do
           begin
             returns[counter].call
           ensure
@@ -60,7 +60,7 @@ describe Venice::Receipt do
 
         context 'with a retryable error response' do
           before do
-            Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(retryable_error_response, response)
+            allow_any_instance_of(Venice::Client).to receive(:json_response_from_verifying_data).and_return(retryable_error_response, response)
           end
 
           it 'creates the receipt' do
@@ -76,7 +76,7 @@ describe Venice::Receipt do
 
         context 'with 4 retryable error responses' do
           before do
-            Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(
+            allow_any_instance_of(Venice::Client).to receive(:json_response_from_verifying_data).and_return(
               retryable_error_response,
               retryable_error_response,
               retryable_error_response,
@@ -98,7 +98,7 @@ describe Venice::Receipt do
           end
 
           before do
-            Venice::Client.any_instance.stub(:json_response_from_verifying_data).and_return(error_response, response)
+            allow_any_instance_of(Venice::Client).to receive(:json_response_from_verifying_data).and_return(error_response, response)
           end
 
           it { expect { subject }.to raise_error(Venice::Receipt::VerificationError) }

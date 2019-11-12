@@ -42,19 +42,19 @@ describe Venice::InAppReceipt do
     its(:original_json_data) { attributes }
 
     it "should parse the 'original' attributes" do
-      subject.original.should be_instance_of Venice::InAppReceipt
-      subject.original.transaction_id.should == '140xxx867509'
-      subject.original.purchased_at.should be_instance_of DateTime
+      expect(subject.original).to be_instance_of Venice::InAppReceipt
+      expect(subject.original.transaction_id).to eq '140xxx867509'
+      expect(subject.original.purchased_at).to be_instance_of DateTime
     end
 
     it 'should parse expires_date when expires_date_ms is missing and expires_date is the ms epoch' do
       attributes.delete('expires_date_ms')
       attributes['expires_date'] = '1403941685000'
-      in_app_receipt.expires_at.should eq Time.at(1403941685000 / 1000)
+      expect(in_app_receipt.expires_at).to eq Time.at(1403941685000 / 1000)
     end
 
     it 'should output a hash with attributes' do
-      in_app_receipt.to_h.should include(quantity: 1,
+      expect(in_app_receipt.to_h).to include(quantity: 1,
                                          product_id: 'com.foo.product1',
                                          transaction_id: '1000000070107235',
                                          web_order_line_item_id: '1000000026812043',

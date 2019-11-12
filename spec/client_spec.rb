@@ -7,7 +7,7 @@ describe Venice::Client do
   describe '#verify!' do
     context 'with a receipt response' do
       before do
-        client.stub(:json_response_from_verifying_data).and_return(response)
+        expect(client).to receive(:json_response_from_verifying_data).and_return(response)
       end
 
       let(:response) do
@@ -26,12 +26,12 @@ describe Venice::Client do
     context 'no shared_secret' do
       before do
         client.shared_secret = nil
-        Venice::Receipt.stub :new
+        expect(Venice::Receipt).to receive(:new)
       end
 
       it 'should only include the receipt_data' do
-        Net::HTTP.any_instance.should_receive(:request) do |post|
-          post.body.should eq({ 'receipt-data' => receipt_data }.to_json)
+        expect_any_instance_of(Net::HTTP).to receive(:request) do |post|
+          expect(post.body).to eq({ 'receipt-data' => receipt_data }.to_json)
           post
         end
         client.verify! receipt_data
@@ -42,7 +42,7 @@ describe Venice::Client do
       let(:secret) { 'shhhhhh' }
 
       before do
-        Venice::Receipt.stub :new
+        expect(Venice::Receipt).to receive(:new)
       end
 
       context 'set secret manually' do
@@ -51,8 +51,8 @@ describe Venice::Client do
         end
 
         it 'should include the secret in the post' do
-          Net::HTTP.any_instance.should_receive(:request) do |post|
-            post.body.should eq({ 'receipt-data' => receipt_data, 'password' => secret }.to_json)
+          expect_any_instance_of(Net::HTTP).to receive(:request) do |post|
+            expect(post.body).to eq({ 'receipt-data' => receipt_data, 'password' => secret }.to_json)
             post
           end
           client.verify! receipt_data
@@ -63,8 +63,8 @@ describe Venice::Client do
         let(:options) { { shared_secret: secret } }
 
         it 'should include the secret in the post' do
-          Net::HTTP.any_instance.should_receive(:request) do |post|
-            post.body.should eq({ 'receipt-data' => receipt_data, 'password' => secret }.to_json)
+          expect_any_instance_of(Net::HTTP).to receive(:request) do |post|
+            expect(post.body).to eq({ 'receipt-data' => receipt_data, 'password' => secret }.to_json)
             post
           end
           client.verify! receipt_data, options
@@ -104,27 +104,27 @@ describe Venice::Client do
       end
 
       it 'should create a latest receipt' do
-        client.stub(:json_response_from_verifying_data).and_return(response)
+        expect(client).to receive(:json_response_from_verifying_data).and_return(response)
         receipt = client.verify! 'asdf'
-        receipt.env_name.should eq 'development'
-        receipt.latest_receipt_info.should_not be_nil
-        receipt.latest_receipt_info.first.product_id.should eq 'com.ficklebits.nsscreencast.monthly_sub'
+        expect(receipt.env_name).to eq 'development'
+        expect(receipt.latest_receipt_info).not_to be_nil
+        expect(receipt.latest_receipt_info.first.product_id).to eq 'com.ficklebits.nsscreencast.monthly_sub'
       end
 
       context 'when latest_receipt_info is a hash instead of an array' do
         it 'should still create a latest receipt' do
           response['latest_receipt_info'] = response['latest_receipt_info'].first
-          client.stub(:json_response_from_verifying_data).and_return(response)
+          expect(client).to receive(:json_response_from_verifying_data).and_return(response)
           receipt = client.verify! 'asdf'
-          receipt.latest_receipt_info.should_not be_nil
-          receipt.latest_receipt_info.first.product_id.should eq 'com.ficklebits.nsscreencast.monthly_sub'
+          expect(receipt.latest_receipt_info).not_to be_nil
+          expect(receipt.latest_receipt_info.first.product_id).to eq 'com.ficklebits.nsscreencast.monthly_sub'
         end
       end
     end
 
     context 'with an error response' do
       before do
-        client.stub(:json_response_from_verifying_data).and_return(response)
+        expect(client).to receive(:json_response_from_verifying_data).and_return(response)
       end
 
       let(:response) do
@@ -147,7 +147,7 @@ describe Venice::Client do
 
     context 'with a retryable error response' do
       before do
-        client.stub(:json_response_from_verifying_data).and_return(response)
+        expect(client).to receive(:json_response_from_verifying_data).and_return(response)
       end
 
       let(:response) do
