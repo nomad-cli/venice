@@ -6,8 +6,13 @@ module Venice
   ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT = 'https://buy.itunes.apple.com/verifyReceipt'
   ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'
 
+  module Environment
+    PRODUCTION = 'production'
+    DEVELOPMENT = 'development'
+  end
+
   class Client
-    attr_accessor :verification_url, :env_name
+    attr_accessor :verification_url, :environment
     attr_writer :shared_secret
     attr_writer :exclude_old_transactions
 
@@ -15,31 +20,31 @@ module Venice
       def development
         client = new
         client.verification_url = ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
-        client.env_name = Venice::Receipt::EnvName::DEVELOPMENT
+        client.environment = Environment::DEVELOPMENT
         client
       end
 
       def production
         client = new
         client.verification_url = ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT
-        client.env_name = Venice::Receipt::EnvName::PRODUCTION
+        client.environment = Environment::PRODUCTION
         client
       end
     end
 
     def initialize
       @verification_url = ENV['IAP_VERIFICATION_ENDPOINT']
-      @env_name = ENV['IAP_VERIFICATION_ENVIRONMENT']
+      @environment = ENV['IAP_VERIFICATION_ENVIRONMENT']
     end
 
     def verify!(data, options = {})
       @verification_url ||= ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
-      @env_name ||= Venice::Receipt::EnvName::DEVELOPMENT
+      @environment ||= Environment::DEVELOPMENT
       @shared_secret = options[:shared_secret] if options[:shared_secret]
       @exclude_old_transactions = options[:exclude_old_transactions] if options[:exclude_old_transactions]
 
       json = json_response_from_verifying_data(data, options)
-      json['env_name'] = env_name if json
+      json['environment'] = environment if json
 
       case json['status'].to_i
       when 0, 21006

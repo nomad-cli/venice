@@ -106,7 +106,7 @@ describe Venice::Client do
       it 'should create a latest receipt' do
         expect(client).to receive(:json_response_from_verifying_data).and_return(response)
         receipt = client.verify! 'asdf'
-        expect(receipt.env_name).to eq 'development'
+        expect(receipt.environment).to eq 'development'
         expect(receipt.latest_receipt_info).not_to be_nil
         expect(receipt.latest_receipt_info.first.product_id).to eq 'com.ficklebits.nsscreencast.monthly_sub'
       end

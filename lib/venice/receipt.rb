@@ -4,11 +4,6 @@ module Venice
   class Receipt
     MAX_RE_VERIFY_COUNT = 3
 
-    module EnvName
-      DEVELOPMENT = 'development'
-      PRODUCTION = 'production'
-    end
-
     # For detailed explanations on these keys/values, see
     # https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#//apple_ref/doc/uid/TP40010573-CH106-SW1
 
@@ -47,13 +42,13 @@ module Venice
     attr_reader :pending_renewal_info
 
     # The environment on which the receipt has verified against
-    attr_reader :env_name
+    attr_reader :environment
 
     def initialize(original_json_response = {})
       attributes = original_json_response['receipt']
 
       @original_json_response = original_json_response
-      @env_name = original_json_response['env_name']
+      @environment = original_json_response['environment']
       @bundle_id = attributes['bundle_id']
       @application_version = attributes['application_version']
       @original_application_version = attributes['original_application_version']
@@ -106,16 +101,16 @@ module Venice
     end
 
     def development?
-      env_name == Venice::Receipt::EnvName::DEVELOPMENT
+      environment == Environment::DEVELOPMENT
     end
 
     def production?
-      env_name == Venice::Receipt::EnvName::PRODUCTION
+      environment == Environment::PRODUCTION
     end
 
     def to_hash
       {
-        env_name: @env_name,
+        environment: @environment,
         bundle_id: @bundle_id,
         application_version: @application_version,
         original_application_version: @original_application_version,

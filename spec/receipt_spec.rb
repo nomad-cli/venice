@@ -47,7 +47,7 @@ describe Venice::Receipt do
         expect(subject).to be_an_instance_of(Venice::Receipt)
       end
 
-      its(:env_name) { is_expected.to eq 'production' }
+      its(:environment) { is_expected.to eq 'production' }
 
       describe 'retrying VerificationError' do
         let(:retryable_error_response) do
@@ -67,10 +67,8 @@ describe Venice::Receipt do
             expect(subject).to be_an_instance_of(Venice::Receipt)
           end
 
-          its(:env_name) { is_expected.to eq 'production' }
-
+          its(:environment) { is_expected.to eq 'production' }
           its(:production?) { is_expected.to be true }
-
           its(:development?) { is_expected.to be false }
         end
 
@@ -91,9 +89,9 @@ describe Venice::Receipt do
         context 'with a not retryable error response' do
           let(:error_response) do
             {
-                'status' => 21000,
-                'receipt' => {},
-                'is_retryable' => false
+              'status' => 21000,
+              'receipt' => {},
+              'is_retryable' => false
             }
           end
 
@@ -125,10 +123,8 @@ describe Venice::Receipt do
             expect(subject).to be_an_instance_of(Venice::Receipt)
           end
 
-          its(:env_name) { is_expected.to eq 'development' }
-
+          its(:environment) { is_expected.to eq 'development' }
           its(:production?) { is_expected.to be false }
-
           its(:development?) { is_expected.to be true }
         end
       end
