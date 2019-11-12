@@ -101,11 +101,11 @@ module Venice
     end
 
     def development?
-      environment == Environment::DEVELOPMENT
+      environment == Environment::DEVELOPMENT.name
     end
 
     def production?
-      environment == Environment::PRODUCTION
+      environment == Environment::PRODUCTION.name
     end
 
     def to_hash

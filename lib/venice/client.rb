@@ -3,12 +3,9 @@ require 'net/https'
 require 'uri'
 
 module Venice
-  ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT = 'https://buy.itunes.apple.com/verifyReceipt'
-  ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'
-
-  module Environment
-    PRODUCTION = 'production'
-    DEVELOPMENT = 'development'
+  class Environment < Struct.new(:name, :endpoint)
+    PRODUCTION = new('production', 'https://buy.itunes.apple.com/verifyReceipt')
+    DEVELOPMENT = new('development', 'https://sandbox.itunes.apple.com/verifyReceipt')
   end
 
   class Client
@@ -19,15 +16,15 @@ module Venice
     class << self
       def development
         client = new
-        client.verification_url = ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
-        client.environment = Environment::DEVELOPMENT
+        client.verification_url = Environment::DEVELOPMENT.endpoint
+        client.environment = Environment::DEVELOPMENT.name
         client
       end
 
       def production
         client = new
-        client.verification_url = ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT
-        client.environment = Environment::PRODUCTION
+        client.verification_url = Environment::PRODUCTION.endpoint
+        client.environment = Environment::PRODUCTION.name
         client
       end
     end
@@ -38,8 +35,8 @@ module Venice
     end
 
     def verify!(data, options = {})
-      @verification_url ||= ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
-      @environment ||= Environment::DEVELOPMENT
+      @verification_url ||= Environment::DEVELOPMENT.endpoint
+      @environment ||= Environment::DEVELOPMENT.name
       @shared_secret = options[:shared_secret] if options[:shared_secret]
       @exclude_old_transactions = options[:exclude_old_transactions] if options[:exclude_old_transactions]
 
