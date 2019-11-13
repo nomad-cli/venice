@@ -3,11 +3,6 @@ require 'net/https'
 require 'uri'
 
 module Venice
-  class Environment < Struct.new(:name, :endpoint)
-    PRODUCTION = new('production', 'https://buy.itunes.apple.com/verifyReceipt')
-    DEVELOPMENT = new('development', 'https://sandbox.itunes.apple.com/verifyReceipt')
-  end
-
   class Client
     attr_accessor :verification_url, :environment
     attr_writer :shared_secret
