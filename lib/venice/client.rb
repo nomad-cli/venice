@@ -3,64 +3,44 @@ require 'net/https'
 require 'uri'
 
 module Venice
-  ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT = 'https://buy.itunes.apple.com/verifyReceipt'
-  ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT = 'https://sandbox.itunes.apple.com/verifyReceipt'
-
   class Client
-    attr_accessor :verification_url
+    attr_accessor :verification_url, :environment
     attr_writer :shared_secret
     attr_writer :exclude_old_transactions
 
     class << self
       def development
         client = new
-        client.verification_url = ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
+        client.verification_url = Environment::DEVELOPMENT.endpoint
+        client.environment = Environment::DEVELOPMENT.name
         client
       end
 
       def production
         client = new
-        client.verification_url = ITUNES_PRODUCTION_RECEIPT_VERIFICATION_ENDPOINT
+        client.verification_url = Environment::PRODUCTION.endpoint
+        client.environment = Environment::PRODUCTION.name
         client
       end
     end
 
     def initialize
       @verification_url = ENV['IAP_VERIFICATION_ENDPOINT']
+      @environment = ENV['IAP_VERIFICATION_ENVIRONMENT']
     end
 
     def verify!(data, options = {})
-      @verification_url ||= ITUNES_DEVELOPMENT_RECEIPT_VERIFICATION_ENDPOINT
+      @verification_url ||= Environment::DEVELOPMENT.endpoint
+      @environment ||= Environment::DEVELOPMENT.name
       @shared_secret = options[:shared_secret] if options[:shared_secret]
       @exclude_old_transactions = options[:exclude_old_transactions] if options[:exclude_old_transactions]
 
       json = json_response_from_verifying_data(data, options)
-      receipt_attributes = json['receipt'].dup if json['receipt']
-      receipt_attributes['original_json_response'] = json if receipt_attributes
+      json['environment'] = environment if json
 
       case json['status'].to_i
       when 0, 21006
-        receipt = Receipt.new(receipt_attributes)
-
-        # From Apple docs:
-        # > Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
-        # > The JSON representation of the receipt for the most recent renewal
-        if latest_receipt_info_attributes = json['latest_receipt_info']
-          latest_receipt_info_attributes = [latest_receipt_info_attributes] if latest_receipt_info_attributes.is_a?(Hash)
-
-          # AppStore returns 'latest_receipt_info' even if we use over iOS 6. Besides, its format is an Array.
-          if latest_receipt_info_attributes.is_a?(Array)
-            receipt.latest_receipt_info = []
-            latest_receipt_info_attributes.each do |latest_receipt_info_attribute|
-              # latest_receipt_info format is identical with in_app
-              receipt.latest_receipt_info << InAppReceipt.new(latest_receipt_info_attribute)
-            end
-          else
-            receipt.latest_receipt_info = latest_receipt_info_attributes
-          end
-        end
-
-        return receipt
+        Receipt.new(json)
       else
         raise Receipt::VerificationError, json
       end

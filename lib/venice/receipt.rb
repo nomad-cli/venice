@@ -41,9 +41,14 @@ module Venice
     # Information about the status of the customer's auto-renewable subscriptions
     attr_reader :pending_renewal_info
 
-    def initialize(attributes = {})
-      @original_json_response = attributes['original_json_response']
+    # The environment on which the receipt has verified against
+    attr_reader :environment
 
+    def initialize(original_json_response = {})
+      attributes = original_json_response['receipt']
+
+      @original_json_response = original_json_response
+      @environment = original_json_response['environment']
       @bundle_id = attributes['bundle_id']
       @application_version = attributes['application_version']
       @original_application_version = attributes['original_application_version']
@@ -59,7 +64,8 @@ module Venice
       @download_id = attributes['download_id']
       @requested_at = DateTime.parse(attributes['request_date']) if attributes['request_date']
       @receipt_created_at = DateTime.parse(attributes['receipt_creation_date']) if attributes['receipt_creation_date']
-      @expiration_intent = Integer(original_json_response['expiration_intent']) if original_json_response['expiration_intent']
+
+      @expiration_intent = Integer(original_json_response['expiration_intent']) if original_json_response && original_json_response['expiration_intent']
 
       @in_app = []
       if attributes['in_app']
@@ -74,10 +80,37 @@ module Venice
           @pending_renewal_info << PendingRenewalInfo.new(pending_renewal_attributes)
         end
       end
+
+      # From Apple docs:
+      # > Only returned for iOS 6 style transaction receipts for auto-renewable subscriptions.
+      # > The JSON representation of the receipt for the most recent renewal
+      if latest_receipt_info_attributes = original_json_response['latest_receipt_info']
+        latest_receipt_info_attributes = [latest_receipt_info_attributes] if latest_receipt_info_attributes.is_a?(Hash)
+
+        # AppStore returns 'latest_receipt_info' even if we use over iOS 6. Besides, its format is an Array.
+        if latest_receipt_info_attributes.is_a?(Array)
+          @latest_receipt_info = []
+          latest_receipt_info_attributes.each do |latest_receipt_info_attribute|
+            # latest_receipt_info format is identical with in_app
+            @latest_receipt_info << InAppReceipt.new(latest_receipt_info_attribute)
+          end
+        else
+          @latest_receipt_info = latest_receipt_info_attributes
+        end
+      end
+    end
+
+    def development?
+      environment == Environment::DEVELOPMENT.name
+    end
+
+    def production?
+      environment == Environment::PRODUCTION.name
     end
 
     def to_hash
       {
+        environment: @environment,
         bundle_id: @bundle_id,
         application_version: @application_version,
         original_application_version: @original_application_version,

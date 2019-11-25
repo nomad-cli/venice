@@ -1,4 +1,5 @@
 require 'venice/version'
+require 'venice/environment'
 require 'venice/client'
 require 'venice/in_app_receipt'
 require 'venice/receipt'
