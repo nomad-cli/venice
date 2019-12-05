@@ -35,6 +35,9 @@ module Venice
     # This key is only present for apps that have Billing Grace Period enabled and when the user experiences a billing error at the time of renewal.
     attr_reader :grace_period_expires_at
 
+    # The transaction identifier of the original purchase.
+    attr_reader :original_transaction_id
+
     def initialize(attributes)
       @original_json_data = attributes
       @expiration_intent = Integer(attributes['expiration_intent']) if attributes['expiration_intent']
@@ -50,6 +53,7 @@ module Venice
       @price_consent_status = Integer(attributes['price_consent_status']) if attributes['price_consent_status']
       @cancellation_reason = Integer(attributes['cancellation_reason']) if attributes['cancellation_reason']
       @grace_period_expires_at = DateTime.parse(attributes['grace_period_expires_date']) if attributes['grace_period_expires_date']
+      @original_transaction_id = attributes['original_transaction_id'] if attributes['original_transaction_id']
     end
 
     def to_hash
@@ -62,6 +66,7 @@ module Venice
         price_consent_status: @price_consent_status,
         cancellation_reason: @cancellation_reason,
         grace_period_expires_at: (@grace_period_expires_at.httpdate rescue nil),
+        original_transaction_id: @original_transaction_id,
       }
     end
 

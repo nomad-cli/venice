@@ -35,6 +35,7 @@ describe Venice::PendingRenewalInfo do
                                      price_consent_status: nil,
                                      cancellation_reason: nil,
                                      grace_period_expires_at: nil,
+                                     original_transaction_id: "37xxxxxxxxx89",
                                  )
     end
   end
