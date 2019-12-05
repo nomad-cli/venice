@@ -33,7 +33,9 @@ describe Venice::PendingRenewalInfo do
                                      is_in_billing_retry_period: false,
                                      product_id: 'com.foo.product1',
                                      price_consent_status: nil,
-                                     cancellation_reason: nil)
+                                     cancellation_reason: nil,
+                                     grace_period_expires_at: nil,
+                                 )
     end
   end
 end

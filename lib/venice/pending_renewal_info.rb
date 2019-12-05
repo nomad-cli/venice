@@ -31,6 +31,10 @@ module Venice
     # Use this value along with the cancellation date to identify possible issues in your app that may lead customers to contact Apple customer support.
     attr_reader :cancellation_reason
 
+    # The time at which the grace period for subscription renewals expires, in a date-time format similar to the ISO 8601.
+    # This key is only present for apps that have Billing Grace Period enabled and when the user experiences a billing error at the time of renewal.
+    attr_reader :grace_period_expires_at
+
     def initialize(attributes)
       @original_json_data = attributes
       @expiration_intent = Integer(attributes['expiration_intent']) if attributes['expiration_intent']
@@ -45,6 +49,7 @@ module Venice
 
       @price_consent_status = Integer(attributes['price_consent_status']) if attributes['price_consent_status']
       @cancellation_reason = Integer(attributes['cancellation_reason']) if attributes['cancellation_reason']
+      @grace_period_expires_at = DateTime.parse(attributes['grace_period_expires_date']) if attributes['grace_period_expires_date']
     end
 
     def to_hash
@@ -55,7 +60,8 @@ module Venice
         is_in_billing_retry_period: @is_in_billing_retry_period,
         product_id: @product_id,
         price_consent_status: @price_consent_status,
-        cancellation_reason: @cancellation_reason
+        cancellation_reason: @cancellation_reason,
+        grace_period_expires_at: (@grace_period_expires_at.httpdate rescue nil),
       }
     end
 
