@@ -165,7 +165,7 @@ describe Venice::Receipt do
       end
     end
 
-    it 'parses the pending rerenewal information' do
+    it 'parses the pending renewal information' do
       expect(subject.to_hash[:pending_renewal_info]).to eql([{ expiration_intent: 1,
                                                                auto_renew_status: 0,
                                                                auto_renew_product_id: 'com.foo.product1',
