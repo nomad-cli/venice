@@ -178,4 +178,12 @@ describe Venice::Receipt do
                                                              }])
     end
   end
+
+  describe 'initialize with no argument' do
+    subject { Venice::Receipt.new }
+
+    it 'does not raise error' do
+      expect { subject }.not_to raise_error
+    end
+  end
 end

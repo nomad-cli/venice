@@ -44,7 +44,7 @@ module Venice
     # The environment on which the receipt has verified against
     attr_reader :environment
 
-    def initialize(original_json_response = {})
+    def initialize(original_json_response = {'receipt' => {}})
       attributes = original_json_response['receipt']
 
       @original_json_response = original_json_response
