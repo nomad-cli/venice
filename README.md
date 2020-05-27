@@ -42,6 +42,7 @@ require 'venice'
 data = '(Base64-Encoded Receipt Data)'
 
 # You must pass shared secret when verification on Auto-Renewable
+# To generate a shared secret, go to App Store Connect -> My Apps > (Your app) > In-App Purchases > View or generate a shared secret
 opts = { shared_secret: 'your key' }
 
 if receipt = Venice::Receipt.verify(data, opts)
