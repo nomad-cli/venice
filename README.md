@@ -91,10 +91,6 @@ Venice also comes with the `iap` binary, which provides a convenient way to veri
     +--------------------------------+------------------------------------+
 
 
-## Creator
-
-Mattt Thompson ([@mattt](https://twitter.com/mattt))
-
 ## License
 
 Venice is available under the MIT license. See the LICENSE file for more info.
